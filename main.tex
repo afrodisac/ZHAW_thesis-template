@@ -68,20 +68,20 @@
 % - Abstract / Zusammenfassung
 % - Meta information of PDF
 
-\thesistitle{Project Title}             % Thesis title,              command: \ttitle
-\thesistype{Track Module 1}             % Type of thesis (e.g. Master Thesis) \ttype
+\thesistitle{Flood Modeling with Deep Learning}             % Thesis title,              command: \ttitle
+\thesistype{Thesis}             % Type of thesis (e.g. Master Thesis) \ttype
 \thesisdate{\today}                     % Date of submission                  \tdate
-\keywords{gravity, physics, disruptive science}
+\keywords{Physics, Flooding, Deep Learning, Cellular Automata}
                                         % Keywords for the thesis,            \keywordnames
-\author{Maxine Muster}                  % Your name,                          \authorname
+\author{Eric Gericke}                  % Your name,                          \authorname
 \degree{Master of Science ZFH}          % Degree name,                        \degreename
 \studyprogram{Applied Computational Life Sciences, M.Sc.} 
                                         % Study program                       \studyprog
 \studyprogramlink{https://www.zhaw.ch/en/lsfm/study/master/applied-computational-life-sciences/}
                                         % Link to study program               \studyproglink
 
-\supervisorA{Dr. Albert Einstein}       % Name of supervisor 1,               \supnameA
-\supervisorAmail{e=mc2@zhaw.ch}         % Email address of supervisor 1,      \supmailA
+\supervisorA{Martin Schüle}       % Name of supervisor 1,               \supnameA
+\supervisorAmail{scli@zhaw.ch}         % Email address of supervisor 1,      \supmailA
 \supervisorAweb{https://en.wikipedia.org/wiki/Albert\_Einstein}  %            \supwebA
 \supervisorAinfo{                       % Formatted info about supervisor 1:  \supinfoA
     \supnameA\\
@@ -193,10 +193,11 @@
 
 \include{Chapters/Chapter1}
 \include{Chapters/Chapter2} 
-%\include{Chapters/Chapter3}
-%\include{Chapters/Chapter4} 
-%\include{Chapters/Chapter5} 
-
+\include{Chapters/Chapter3}
+\include{Chapters/Chapter4} 
+\include{Chapters/Chapter5} 
+\include{Chapters/Chapter6}
+%\include{Chapters/Chapter7}
 
 %----------------------------------------------------------------------------------------
 % THESIS CONTENT - APPENDICES
@@ -214,6 +215,7 @@
 
 %----------------------------------------------------------------------------------------
 % BIBLIOGRAPHY
+% I need to compile using biber instead of bibTex...
 %----------------------------------------------------------------------------------------
 \printbibliography[heading=bibintoc]
 
