@@ -28,6 +28,8 @@ There are two well-known CA models that I will briefly mention:
 	Turing-complete.
 \end{enumerate}
 
+\subsection{Common notation of CA}
+[placeholder]
 \subsection{Why are they useful?}
 In the above section, although beautiful and impressive, the exampels are not practival. But the same motivation and methods can be extrapolated to model physicals systems. Especially many differentiable equations that can be descritized in time and space can be modeled using CA. Many examples have been demostrated over the years. In the following \ref{Chapter3}, the CADDIE2D model is discussed in detail. But other examples include: particle simulation, chemical reactions, fire modeling, human and animal dynaimcs to name a few. [must find references for this.]
 
@@ -35,5 +37,40 @@ In the above section, although beautiful and impressive, the exampels are not pr
 \subsection{What is deep learning}
 \subsection{Optimizers for backpropogation}
 \subsection{Common loss functions for regression tasks}
+I create this subsection because I think this needs to be carefully considered. For growing images, L2
+loss is clearly the best option to reproduce images / learning to grow them. However, depending on
+the application of these models the loss function needs to be carefully considered and there are many
+to choose from. An example of this is from the paper [3, Self-Organizing Textures] where they use a
+L2 loss of gram-matrices by using the raw activations of VGG (Visual Geometry Group Net).
+Here we can also look into applying physical constraints to the model, for e.g. adhering to energy
+/ mass conservation.
 \subsection{Convolutional Neural Network}
+
+A Convolutional Neural Network (CNN) is a type of Artificial Neural Network (ANN) that is com-
+monly used in image and video recognition, natural language processing, and other tasks that involve
+processing input data with a grid-like structure.
+The key characteristic of a CNN is the use of convolutional layers, which apply a set of filters to
+the input data to extract relevant features for the task at hand. The filters are typically small in size
+and designed to detect simple patterns, such as edges or corners. The output of the convolutional
+layer then goes through a non-linear activation function, such as the rectified linear unit (ReLU), to
+introduce non-linearity into the network.
+In addition to convolutional layers, a CNN may also include other types of layers such as pooling
+layers, which reduce the spatial dimensions of the input data by selecting the maximum or average
+1value from a set of neighboring pixels, and fully connected layers, which connect every neuron in one
+layer to every neuron in the next layer.
+CNNs have achieved state-of-the-art performance on many computer vision tasks, such as image
+classification, object detection, and segmentation, and are widely used in industry and academia.
+
 \subsection{Neural Cellular automata}
+
+Now that we have some basic foundational knowledge we can move on to the real NCA (or differentiable
+self-organizing systems). as discussed in the section above, a CNN can be seen as a type of CA, but
+utilizing a continuous state-space instead of a discrete one (as well as an arbitrary number of hidden
+states / channels). As described in the growing NCA paper [2], this model can be thought of as a
+“Recurrent Residual Convolutional Network with ‘per-pixel’ Dropout”. The ’per-pixel dropout’ refers
+to the stochastic updating of cells. Essentially, we start from a single black pixel in the center of a
+blank image and run the model on it for a certain number of steps. Then compare the final result of
+this model with the target image we are training the model. We then perform a per-pixel difference
+loss function (L2 loss). Then based on this loss we use ADAM optimizer to back-propagate through
+time to adjust the weights of the model until the model learns to ’grow’ the target image from a seed
+state.a seed state.

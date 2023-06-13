@@ -5,7 +5,11 @@
 %----------------------------------------------------------------------------------------
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-The abstract is like a miniature version of the entire manuscript. Structure it similarly: Begin with the context and motivation for the project, a brief description of the method and available data, your findings, and conclusions. Limit yourself to one page! \parencite{Reference1}
+Flood modeling has been classically done using shallow water equations in 1 or 2D areas. Due to the computational power necessary to simulate flooding using these methods, other approaches are necessary for rapid modeling. A CA approach was introduced. Although it is significantly faster than traditional methods, it is still too slow for rapid modeling. 
+
+We evaluate a few deep learning models for the predictions of flood modeling using CADDIE2D (a CA model) for training data. Although the models perform well compared to the heurstic, they struggle to generalize to other catchment areas. The reasons for which are discussed in detail in \ref{Chapter6}.
+
+Normalization techniques and a custom loss function for the task of linear regression for a CNN. A seperate experiment using a relatively newly proposed Neural Cellular Automaton model is also investigated for this thesis. 
 \end{abstract}
 
 

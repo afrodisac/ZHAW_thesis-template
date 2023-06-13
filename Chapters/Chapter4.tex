@@ -8,32 +8,33 @@
 \label{Chapter4} % For referencing the chapter elsewhere, use \ref{Chapter1}
 
 \section{Data}
-\subsection{data acquisition}
-The data was provided by [Eaweg, institute of Aquatic Sciences]. It was generated using CADDIE2D software, whichsed in /ref{Chapter3}. Multiple catchment areas are part of this data. Work was done on two seperate sets of data.
-\subsubsection{features}
+\subsection{Data Acquisition}
+The data was provided by [Eaweg, institute of Aquatic Sciences]. It was generated using CADDIE2D software, which is discribed in detail in \ref{Chapter3}. Multiple catchment areas are part of this data. Work was done on two seperate sets of data.
+
+\subsection{Data Preprocessing}
+The data acquired is not in the correct form to be fed into the model for training. The size of the matrix is too large to fit into the local machine used in this thesis. Thefore submatrix's were created by randomly indexing into the feature map of size (50x50).
+
+\subsection{Features}
 The dataset contains the WaterDepth (in m), the DEM (digital elevation map - goes into abbreviations). Timesteps, (in seconds) and rainfall events (in mm/hour).
-\subsection{data preprocessing}
-
-\subsection{dataset creation}
-
 \subsubsection{validation and test set}
 
 \section{Model creation}
-\subsection{classical CNN}
+\subsection{Classical CNN}
 This was a baseline model. A generic approximation of grid search was done to find the optimial parameters.
-\subsection{gradient filters}
-A hardcoded kernel with sobel x, sobel y, and identity filters used as a way to to get gradients and information about the neighbourhood. which is then followed up with 1x1 convolutions for the computation. This filter comes straight from the [gorwing nca reference]
-\subsection{deepthwise layer}
+\subsection{Gradient Filters}
+A hardcoded kernel with sobel x, sobel y, and identity filters used as a way to to get gradients and information about the neighbourhood. which is then followed up with 1x1 convolutions for the computation. This filter comes straight from the \cite{growing_nca}
+
+\subsection{Depthwise Convolusional Layer}
 Instead of a 'hardcoded' filter to get gradients, the model learns should learn this filter for each feature and improves the models performance.
 
 
-\subsection{NCA model and adaptions}
+\subsection{NCA Model and Adaptions}
 Here I should discuss the NCA model proposed in Growing NCA paper. 
 
-\section{custom loss functions}
-\subsection{custom mse and mae}
+\section{Custom Loss Function}
+\subsection{Custom L2 loss}
 Due to the nature of the data (extremely small values), the loss starts off extrememly small (example of loss here based on real values). The model also really liked to predict 0 and try to just predict the last timestep. so we create a loss function to weight the 0's according to how many 0s appear in the data. We also try to mask it so that the model cannot predict less than 0 (constraint model)
-\section{Proposed evaluation}
+\section{Proposed Evaluation}
 The proposed evaluation of the model is based on a very simple heuristic. Can the model perform better than prediciting the previous timestep? (i.e. $\delta{Xt} = \delta{Xt-1}$ )
-\section{pipeline creation}
+\section{Pipeline Creation}
 The creation of a pipline for training became extremely important for testing many parameters at once with different configurations for the dataset, training reigime, model creation. It allowed us to test multiple things in parrelel.
