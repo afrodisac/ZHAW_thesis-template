@@ -8,8 +8,16 @@
 \label{Chapter1} % For referencing the chapter elsewhere, use \ref{Chapter1}
 
 \subsection{Background}
-This is where the background will go. and example citation: \cite{Reference1}
-\parencite{Reference3}, \cite[I have no idea what  post note is but lets try]{Reference2}
+The topic of flood modeling has become increasingly important increased risk of flooding all over the world. Limitations of previous flood models are made increasingly apparent as the need for rapid modeling is required. Larger areas that were never at risk of flooding are now at risk. Severe, unexpected pluvial rainfall requires rapid modeling for prevension mechanisms. Unfortunately older methods just aren't fast enough. More recent CA models have allowed for faster modeling. Although these models are faster than traditional methods. They are still too slow, taking hours to model. This thesis proposes a machine learning approach to model flooding. Deep learning has revolutionized many fields and many modeling tasks. The benefits of these models is how fast they perform computation. Often only requiring O(n) time complexity. Another feature of using deep learning approaches is that it can uitilize the GPU (graphical processing unit) to further increase the speed of computation. 
 \subsection{Related Work}
-
+Here I need to discuss The work Joao did and the problems they faced.
 \subsection{Objective}
+The objectives for this thesis are as follows:
+
+\begin{enumerate}
+	\item Normalize the data in such a way that data remains bound to physics \label{question1}
+	\item Investigate different CNN model architectures and hyper parameters for predicting water depth. \label{qustion2} 
+	\item Create a custom loss function that constrains the model to adhere to mass conservation. \label{question3}
+	\item Can the model project arbitrarily into the future and predict multiple time steps ahead? \label{question4}
+	\item Is the trained model computationally faster than the model proposed by \cite{Ghimire}? \label{question5}
+\end{enumerate}

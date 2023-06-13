@@ -4,21 +4,36 @@
 %----------------------------------------------------------------------------------------
 % CHAPTER 2
 %----------------------------------------------------------------------------------------
-\chapter{Theoretical Background} % Main chapter title
+\chapter{Methods} % Main chapter title
 \label{Chapter2} % For referencing the chapter elsewhere, use \ref{Chapter1}
-
+In this chapter, the relevant literature and background information is discussed so the reader is more easily able to follow the thesis. 
 \section{Cellular Automata}
-\subsection{What is a cellular automta}
-\subsubsection{Game of Life}
-\subsubsection{Elementary cellular automata}
-\subsection{CA for flood modeling}
+\subsection{What Are Cellular Automata}
+A Cellular Automaton (CA) is a system that typically consists of a discrete lattice or grid of cells.
+Each cell can have a discrete state, such as alive or dead, 0 or 1, etc. The cells in the grid are updated
+based on simple rules that depend on the cells’ local neighbourhood. The entire system is typically
+updated simultaneously. What makes these systems fascinating is that even with very simple rules,
+complex emergent behavior can arise.
+There are two well-known CA models that I will briefly mention:
 
-\section{Deep Learning Models used in this work}
+\begin{enumerate}
+	\item Wolfram’s elementary CA is a one-dimensional CA with a local neighborhood of size 3, which
+	includes the cell itself and its right and left neighbors. Some of these rules result in simple
+	behavior, while others exhibit incredibly complex behaviors, such as the famous Rule 30 or the
+	Turing-complete Rule 110.
+	\item John Conway’s Game of Life is perhaps the most famous CA model. It is a two-dimensional
+	CA on a square lattice that has been extensively studied, with new discoveries still being made
+	to this day. This system uses the Moore’s neighborhood, which is a 3x3 neighborhood that
+	includes the central cell. The Game of Life produces incredible emergent behavior and is also
+	Turing-complete.
+\end{enumerate}
+
+\subsection{Why are they useful?}
+In the above section, although beautiful and impressive, the exampels are not practival. But the same motivation and methods can be extrapolated to model physicals systems. Especially many differentiable equations that can be descritized in time and space can be modeled using CA. Many examples have been demostrated over the years. In the following \ref{Chapter3}, the CADDIE2D model is discussed in detail. But other examples include: particle simulation, chemical reactions, fire modeling, human and animal dynaimcs to name a few. [must find references for this.]
+
+\section{Deep Learning}
+\subsection{What is deep learning}
+\subsection{Optimizers for backpropogation}
+\subsection{Common loss functions for regression tasks}
 \subsection{Convolutional Neural Network}
 \subsection{Neural Cellular automata}
-\subsubsection{CNN as CA}
-\subsubsection{Growing Neural cellular automata paper}
-
-\section{Optimizers for backpropogation}
-\section{Common loss functions for regression tasks}
-
