@@ -8,6 +8,14 @@
 \label{Chapter4} % For referencing the chapter elsewhere, use \ref{Chapter1}
 
 \section{Data}
+Some General notes about the data:
+
+In order to train the NCA, simulated flood data was used over a catchment area with homogenious rainfall and constant roughness coefficient. The simulated data is proven to be quite accurate and maintains mass and energy conservation. Due to a lack of compute, randomly selected subsections of the data was used and each timestep (10 or 1 minute intervals of simulation time) were used as targets for the L2 loss function.
+
+The model works by adding the specific rainfall event directly into the water depth cell. The second channel is the DEM (digital elevation map) which is immutable in this case and the rest of the channels (25 total) are hidden channels that are not calculated in the loss function. Just like in the Growing Neural CA paper, the model is free to do what it will with these channels and only the water depth (and later hopefully velocity) will be adjusted over each iteration.
+
+The problem I faced when slicing is there could be higher elevations with a water depth outside of this area, so when you look at the target, more water might be seen than there should be. to remidy this, I decided to use no padding and instead make the square 1 pixel in each direction larger for the input and the target is smaller. This hopefully will remedy this issue. <- this didn't work at all and I'm not entirely sure how to solve this problem now. because there is no 'run off' in the middle of the catchment area...
+
 \subsection{Data Acquisition}
 The data was provided by [Eaweg, institute of Aquatic Sciences]. It was generated using CADDIE2D software, which is discribed in detail in \ref{Chapter3}. Multiple catchment areas are part of this data. Work was done on two seperate sets of data.
 
@@ -22,14 +30,38 @@ The dataset contains the WaterDepth (in m), the DEM (digital elevation map - goe
 \subsection{Classical CNN}
 This was a baseline model. A generic approximation of grid search was done to find the optimial parameters.
 \subsection{Gradient Filters}
-A hardcoded kernel with sobel x, sobel y, and identity filters used as a way to to get gradients and information about the neighbourhood. which is then followed up with 1x1 convolutions for the computation. This filter comes straight from the \cite{growing_nca}
+A hardcoded kernel with sobel x, sobel y, and identity filters used as a way to to get gradients and information about the neighbourhood. which is then followed up with 1x1 convolutions for the computation. This filter comes straight from \cite{growing_nca}.
 
 \subsection{Depthwise Convolusional Layer}
 Instead of a 'hardcoded' filter to get gradients, the model learns should learn this filter for each feature and improves the models performance.
 
 
 \subsection{NCA Model and Adaptions}
-Here I should discuss the NCA model proposed in Growing NCA paper. 
+The model used is extremely similar to the model used in \cite{growing_nca} with some minor changes.
+
+run an 80 filter, 3x3 kernel convolution over the input to create a feature map.
+
+Then run 1x1 convolution, 128 layer deep, with activation relu.
+pass that to another linear layer, output is the original channel count with no activation (although it might be possible to do something like sigmoid potentially due to the original caddieCA having a maximum allowed water transfer)
+
+I make sure to not increment the DEM feature. I add alive masking (cell with \textless{} {0.01} m water depth is set to 0, because that's how the caddieCA model works (also something not done in the paper Joao sent us.))
+
+The output of this model  becomes the new input, like a residual block.
+
+\subsection{Building Intuition About The Model}
+
+Based on the amazing work of \cite[A. Mordvintesev et al.]{growing_nca} and his associated tutorials, I implemented a simplified version of this NCA in Tensorflow. The first attempt was just copying the code and playing with the notebook available \href{https://colab.research.google.com/github/google-research/self-organising-systems/blob/master/notebooks/growing_ca.ipynb}{here}. Next was simplifying the model to point I could understand the code. It turns out that a lot of the work that went into this paper was creating an incredibly robust model that was invariant to many factors, such as rotation, regrowth, and persistence. All of which I didn't really need for my purposes. And once I had a grasp of the basic concepts I could expand the model / training as needed.
+
+Some things I did not implement from the paper:
+\begin{itemize}
+	\item Damaging the model to train for regrowth
+	\item Playing around with the fire rate as 0.5 seemed to work best based on the paper anyways
+	\item Creating a circle mask around the image such that it doesn't rely on edges to grow certain features (or in some cases the whole image)
+\end{itemize}
+
+One method I implemented from the original paper was the pooling section. This is just a way to artificially increase the amount of iterations the model performs to make sure that once the image has been accurately grown, the image remains after an arbitrary amount of time-steps. It does this by sampling final grown images from training and uses this as the initial configuration of the model. So if during training, you start from a seed configuration of a single black pixel in the center of the blank image, and allow it to grow to grow for example 50 time steps until it produces an image, then during the next iteration of training, the initial configuration will be that image and needs to remain that image for 50 time-steps. Essentially artificially increasing the time steps from 50 to 100 without having to perform back-propagation over 100 time-steps.
+
+There were some issues with this method though. If you don't have a sufficiently large enough pool then the pool might get clogged up with terrible, failed images that are essentially just noise. it is better to use this at later stages of training when it isn't growing randomly.
 
 \section{Custom Loss Function}
 \subsection{Custom L2 loss}

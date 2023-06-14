@@ -46,31 +46,36 @@ Here we can also look into applying physical constraints to the model, for e.g. 
 / mass conservation.
 \subsection{Convolutional Neural Network}
 
-A Convolutional Neural Network (CNN) is a type of Artificial Neural Network (ANN) that is com-
-monly used in image and video recognition, natural language processing, and other tasks that involve
-processing input data with a grid-like structure.
-The key characteristic of a CNN is the use of convolutional layers, which apply a set of filters to
-the input data to extract relevant features for the task at hand. The filters are typically small in size
-and designed to detect simple patterns, such as edges or corners. The output of the convolutional
-layer then goes through a non-linear activation function, such as the rectified linear unit (ReLU), to
-introduce non-linearity into the network.
-In addition to convolutional layers, a CNN may also include other types of layers such as pooling
-layers, which reduce the spatial dimensions of the input data by selecting the maximum or average
-1value from a set of neighboring pixels, and fully connected layers, which connect every neuron in one
-layer to every neuron in the next layer.
-CNNs have achieved state-of-the-art performance on many computer vision tasks, such as image
-classification, object detection, and segmentation, and are widely used in industry and academia.
+A Convolutional Neural Network (CNN) is a type of Artificial Neural Network (ANN) that is commonly used in image and video recognition, natural language processing, and other tasks that involve processing input data with a grid-like structure.
 
-\subsection{Neural Cellular automata}
+The key characteristic of a CNN is the use of convolutional layers, which apply a set of filters to the input data to extract relevant features for the task at hand. The filters are typically small in size and designed to detect simple patterns, such as edges or corners. The output of the convolutional layer then goes through a non-linear activation function, such as the rectified linear unit (ReLU), to introduce non-linearity into the network.
 
-Now that we have some basic foundational knowledge we can move on to the real NCA (or differentiable
-self-organizing systems). as discussed in the section above, a CNN can be seen as a type of CA, but
-utilizing a continuous state-space instead of a discrete one (as well as an arbitrary number of hidden
-states / channels). As described in the growing NCA paper [2], this model can be thought of as a
-“Recurrent Residual Convolutional Network with ‘per-pixel’ Dropout”. The ’per-pixel dropout’ refers
-to the stochastic updating of cells. Essentially, we start from a single black pixel in the center of a
-blank image and run the model on it for a certain number of steps. Then compare the final result of
-this model with the target image we are training the model. We then perform a per-pixel difference
-loss function (L2 loss). Then based on this loss we use ADAM optimizer to back-propagate through
-time to adjust the weights of the model until the model learns to ’grow’ the target image from a seed
-state.a seed state.
+In addition to convolutional layers, a CNN may also include other types of layers such as pooling layers, which reduce the spatial dimensions of the input data by selecting the maximum or average value from a set of neighboring pixels, and fully connected layers, which connect every neuron in one layer to every neuron in the next layer.
+
+CNNs have achieved state-of-the-art performance on many computer vision tasks, such as image classification, object detection, and segmentation, and are widely used in industry and academia.
+
+\subsection{CNN as a CA}
+As it turns out, CNN's and CA's are extremely similar. Cellular automata (CA) and convolutional neural networks (CNN) are both types of mathematical models that can be used to process and analyze data with a grid-like structure, such as images or time series data. \cite{PhysRevE.100.032402}
+
+Both models operate by processing the input data in a local and hierarchical manner. In a CA, the state of each cell is updated based on the states of its neighboring cells, while in a CNN, filters are applied to local patches of the input data to extract relevant features. However, one can think of a neighbourhood as a NxM kernel filled with 1s. In fact, by utilizing a cleverly constructed kernel and activation function, one can model many CA's by performing this convolution and applying an activation function. A simple example of this is game of life as a convolusion: \\ \\
+$
+\begin{bmatrix}
+	1 & 1 & 1 \\
+	1 & 9 & 1 \\
+	1 & 1 & 1
+\end{bmatrix}
+$
+Kernel to be applied \\ \\
+And activation function (or local update rule): \\ \\
+$
+f(convolution) = \begin{cases}
+	1, & \text{if } convolution = 3 \text{ or } convolution = 11 \text{ or } convolution = 12 \\
+	0, & \text{otherwise}
+\end{cases}
+$ \\ \\
+
+It turns out that CNN's can learn the rules of arbitrary CA's, for example game of life, and it doesn't need a particularly deep architecture to do so. it does this by essentially learning the kernel / filter weights that needs to be applied. To use a CNN as a CA, you essentially turn the CA into a binary classification problem to predict the state of each cell.
+
+\subsection{Neural Cellular Automata}
+
+Now that we have some basic foundational knowledge we can move on to the real NCA (or differentiable, self-organizing systems). As discussed in the section above, a CNN can be seen as a type of CA, but utilizing a continuous state-space instead of a discrete one (as well as an arbitrary number of hidden states / channels). As described in the growing NCA paper \cite{growing_nca}, this model can be thought of as a “Recurrent Residual Convolutional Network with ‘per-pixel’ Dropout”. The 'per-pixel dropout' refers to the stochastic updating of cells. We start from a single black pixel in the center of a blank image and run the model on it for a certain number of steps where the output of the model becomes the new input. Then compare the final result of this model with the target image we are training the model. We then perform a per-pixel difference loss function (L2 loss). Then based on this loss we use ADAM optimizer to back-propagate through time to adjust the weights of the model until the model learns to 'grow' the target image from a seed state.a seed state.
