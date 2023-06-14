@@ -1,0 +1,130 @@
+\documentclass{article}
+
+% Language setting
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{A Quick Breakdown of The Work Done So Far}
+\author{Eric Gericke}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{What is a Cellular Automata (CA)}
+	A Cellular Automaton (CA) is a system that typically consists of a discrete lattice or grid of cells. Each cell can have a discrete state, such as alive or dead, 0 or 1, etc. The cells in the grid are updated based on simple rules that depend on the cells' local neighbourhood. The entire system is typically updated simultaneously. What makes these systems fascinating is that even with very simple rules, complex emergent behavior can arise.
+	
+	There are two well-known CA models that I will briefly mention:
+	\begin{enumerate}
+		\item Wolfram's elementary CA is a one-dimensional CA with a local neighborhood of size 3, which includes the cell itself and its right and left neighbors. Some of these rules result in simple behavior, while others exhibit incredibly complex behaviors, such as the famous Rule 30 or the Turing-complete Rule 110.
+		
+		\item John Conway's Game of Life is perhaps the most famous CA model. It is a two-dimensional CA on a square lattice that has been extensively studied, with new discoveries still being made to this day. This system uses the Moore's neighborhood, which is a 3x3 neighborhood that includes the central cell. The Game of Life produces incredible emergent behavior and is also Turing-complete.
+		
+	\end{enumerate}
+	
+	
+\section{What is a Convolutional Neural Network (CNN)}
+	A Convolutional Neural Network (CNN) is a type of Artificial Neural Network (ANN) that is commonly used in image and video recognition, natural language processing, and other tasks that involve processing input data with a grid-like structure.
+	
+	The key characteristic of a CNN is the use of convolutional layers, which apply a set of filters to the input data to extract relevant features for the task at hand. The filters are typically small in size and designed to detect simple patterns, such as edges or corners. The output of the convolutional layer then goes through a non-linear activation function, such as the rectified linear unit (ReLU), to introduce non-linearity into the network.
+	
+	In addition to convolutional layers, a CNN may also include other types of layers such as pooling layers, which reduce the spatial dimensions of the input data by selecting the maximum or average value from a set of neighboring pixels, and fully connected layers, which connect every neuron in one layer to every neuron in the next layer.
+	
+	CNNs have achieved state-of-the-art performance on many computer vision tasks, such as image classification, object detection, and segmentation, and are widely used in industry and academia.
+
+\section{CNN as a CA}
+	As it turns out, CNN's and CA's are extremely similar. Cellular automata (CA) and convolutional neural networks (CNN) are both types of mathematical models that can be used to process and analyze data with a grid-like structure, such as images or time series data. \cite{PhysRevE.100.032402}
+	
+	Both models operate by processing the input data in a local and hierarchical manner. In a CA, the state of each cell is updated based on the states of its neighboring cells, while in a CNN, filters are applied to local patches of the input data to extract relevant features. However, one can think of a neighbourhood as a NxM kernel filled with 1s. In fact, by utilizing a cleverly constructed kernel and activation function, one can model many CA's by performing this convolution and applying an activation function. A simple example of this is game of life as a convolusion: \\ \\
+	$
+	\begin{bmatrix}
+		1 & 1 & 1 \\
+		1 & 9 & 1 \\
+		1 & 1 & 1
+	\end{bmatrix}
+	$
+	Kernel to be applied \\ \\
+	And activation function (or local update rule): \\ \\
+	$
+	f(convolution) = \begin{cases}
+	1, & \text{if } convolution = 3 \text{ or } convolution = 11 \text{ or } convolution = 12 \\
+	0, & \text{otherwise}
+	\end{cases}
+	$ \\ \\
+	
+	It turns out that that CNN's can learn the rules of arbitrary CA's, for example game of life, and it doesn't need a particularly deep architecture to do so. it does this by essentially learning the kernel / filter weights that needs to be applied. To use a CNN as a CA, you essentially turn the CA into a binary classification problem to predict the state of each cell.
+
+\section{What is a Neural Cellular Automata (NCA)}
+Now that we have some basic foundational knowledge we can move on to the real NCA (or differentiable, self-organizing systems). As discussed in the section above, a CNN can be seen as a type of CA, but utilizing a continuous state-space instead of a discrete one (as well as an arbitrary number of hidden states / channels). As described in the growing NCA paper \cite{mordvintsev2020growing}, this model can be thought of as a “Recurrent Residual Convolutional Network with ‘per-pixel’ Dropout”. The 'per-pixel dropout' refers to the stochastic updating of cells. We start from a single black pixel in the center of a blank image and run the model on it for a certain number of steps where the output of the model becomes the new input. Then compare the final result of this model with the target image we are training the model. We then perform a per-pixel difference loss function (L2 loss). Then based on this loss we use ADAM optimizer to back-propagate through time to adjust the weights of the model until the model learns to 'grow' the target image from a seed state.a seed state.
+
+\section{Model and Observations}
+	In this section I will cover the work I've done so far regarding NCA's. This will include covering some of the original paper \cite[Growing Neural Cellular Automata]{mordvintsev2020growing}. My implementation and some things I noticed about the model / training process.
+
+\subsection*{Creating a Simplified Toy Model}
+	Based on the amazing work of \cite[A. Mordvintesev et al.]{mordvintsev2020growing} and his associated tutorials, I implemented a simplified version of this NCA in Tensorflow. The first attempt was just copying the code and playing with the notebook available \href{https://colab.research.google.com/github/google-research/self-organising-systems/blob/master/notebooks/growing_ca.ipynb}{here}. Next was simplifying the model to point I could understand the code. It turns out that a lot of the work that went into this paper was creating an incredibly robust model that was invariant to many factors, such as rotation, regrowth, and persistence. All of which I didn't really need for my purposes. And once I had a grasp of the basic concepts I could expand the model / training as needed.
+	
+	Some things I did not implement from the paper:
+	\begin{itemize}
+		\item Damaging the model to train for regrowth
+		\item Playing around with the fire rate as 0.5 seemed to work best based on the paper anyways
+		\item Creating a circle mask around the image such that it doesn't rely on edges to grow certain features (or in some cases the whole image)
+	\end{itemize}
+	
+	One method I implemented from the original paper was the pooling section. This is just a way to artificially increase the amount of iterations the model performs to make sure that once the image has been accurately grown, the image remains after an arbitrary amount of time-steps. It does this by sampling final grown images from training and uses this as the initial configuration of the model. So if during training, you start from a seed configuration of a single black pixel in the center of the blank image, and allow it to grow to grow for example 50 time steps until it produces an image, then during the next iteration of training, the initial configuration will be that image and needs to remain that image for 50 time-steps. Essentially artificially increasing the time steps from 50 to 100 without having to perform back-propagation over 100 time-steps.
+	
+	There were some issues with this method though. If you don't have a sufficiently large enough pool then the pool might get clogged up with terrible, failed images that are essentially just noise. it is better to use this at later stages of training when it isn't growing randomly.
+	
+	
+\subsection*{Some observations of my simplified model}
+	 trained the model on a bunch of different images and at different sizes and using different iterations of the ‘ca’. For highly regular patterns, the model can quickly converge on the correct rules of the system and can be quite robust. The best example of this is a checkered chess board style. Where the pixels are only black or white and have a definite pattern. Not only does is the model able to learn this pattern fairly quickly, but it also shows extremely versitile and robust behavior from the get-go. To prove this I used a typical seed initial configuration to grow the image. And this seems able to go on indefinitely without degradation of the image. I could also use an initial condition that the model has never seen before, like any arbitrary image, and it will quickly change to the correct image. Unfortunately, I was not so successful with many other images, especially ones that were quite complex or irregular and most models were unable to revert back to the trained image when the initial configuration was not the original seed configuration.
+
+\subsection*{Loss functions}
+	I create this subsection because I think this needs to be carefully considered. For growing images, L2 loss is clearly the best option to reproduce images / learning to grow them. However, depending on the application of these models the loss function needs to be carefully considered and there are many to choose from. An example of this is from the paper \cite[Self-Organizing Textures]{niklasson2021self-organising} where they use a L2 loss of gram-matrices by using the raw activations of VGG (Visual Geometry Group Net).
+	
+	Here we can also look into applying physical constraints to the model, for e.g. adhering to energy / mass conservation. To start with I think it will be better to not apply constraints yet and hopefully it learns the physical constraints but when you have this run off then it might be a lot harder.
+
+\subsection*{Image processing... a failed experiment, but perhaps a road forward}
+	I found a dataset on kaggle with blurred/sharp images. My idea was simple, try to apply this NCA model to sharpen an image. It turns out this didn't quite go as expected but I am still hopeful that NCA's can learn some basic image manipulation tasks. This might be a good section to talk about some of the limitations of these models, at least while trying to train them on a local machine. 1. because of the amount of iterations the model has to run for whilst also applying back-propagation through time, results in a large amount of vram required to train the model. Also, the larger the image is, the more iterations you have to do and the harder it is, not only in terms of computing power to train the model, but also for the model to converge to the optimal solution. After trying a variety of approaches I was unable to achieve my goal for image sharpening. However, I did manage to blurr the images in question. There are a few things I can think of that might help. The first is the dataset itself. After looking throught the dataset, a lot of the test/training split images were sufficiently different from each other which I assume made it quite hard for my model to generalize. Another issue is the size I had to reduce the images to... This may have resulted in both the test and training images being blurred. The loss function. I attempted to use a different loss function than a per-pixel L2 loss that may help to compare sharpness of two images but this also didn't work so well. Lastly, reduce the iterations the model but perform to a very small number, eg 1 or 2 iterations. This might be the thing that works the best.
+
+
+
+\section{Next steps}
+	The next problem to tackle is to adjust the model sufficiently so that it can learn to model flooding. The main goal will be to accurately predict the flood depth of each cell. However, I believe that the NCA might be able to simulate the flood itself.
+	
+	Now that I have the data, the next steps are to first look at the data and create an NCA that can predict (1) flood depth and (2) simulate the flood. I think the main problem will be (1) the loss function that we decide to use, although I think L2 loss will also be the most viable option here. And (2) making sure that the terrain height remains constant. There has to be some workaround here. The reason this will be a problem is that the way the model works is an incremental change of "pixel" or element values across the channels. If the terrain height is in one of the channels, then the model might incrementally change it. However, perhaps it will learn not to change that channel value if the loss function heavily punishes it.
+\section{NCA for flood modeling}
+\subsection{Introduction}
+	Climate change is rapidly becoming more and more of a problem with strange weather phenomenon becoming more common. Sea levels are rising and heavy rainfall in some regions results in more flooding in urban environments. The need for accurate and fast flood modeling is becoming critical in order to mitigate the effects of these weather phenomenon. Classical flood modeling is slow for large areas and requires a lot of compute power. Recently, Cellular automata have been used to accurately model flooding plains, however they are also relatively slow due to the amount of times you must iterate over the data, and they still make use of shallow water equations to do so. This is where we believe the novel use of NCA could be useful. They can make use of the gpu and require far less iterations to predict water depth and potentially velocity as well. NCA have an advantage over classical CNN as it has these residual blocks which allow for more classical simulation rather than just a classification.
+\subsection{The model}
+	The model used is extremely similar to the model used in \cite{mordvintsev2020growing} with some minor changes.
+	
+	run an 80 filter, 3x3 kernel convolution over the input to create a feature map.
+	
+	Then run 1x1 convolution, 128 layer deep, with activation relu.
+	pass that to another linear layer, output is the original channel count with no activation (although it might be possible to do something like sigmoid potentially due to the original caddieCA having a maximum allowed water transfer)
+	
+	I make sure to not increment the DEM feature. I add alive masking (cell with \textless{} {0.01} m water depth is set to 0, because that's how the caddieCA model works (also something not done in the paper Joao sent us.))
+	
+	The output of this model  becomes the new input, like a residual block.
+	
+\subsection{Data}
+	In order to train the NCA, simulated flood data was used over a catchment area with homogenious rainfall and constant roughness coefficient. The simulated data is proven to be quite accurate and maintains mass and energy conservation. Due to a lack of compute, randomly selected subsections of the data was used and each timestep (10 or 1 minute intervals of simulation time) were used as targets for the L2 loss function.
+	
+	The model works by adding the specific rainfall event directly into the water depth cell. The second channel is the DEM (digital elevation map) which is immutable in this case and the rest of the channels (25 total) are hidden channels that are not calculated in the loss function. Just like in the Growing Neural CA paper, the model is free to do what it will with these channels and only the water depth (and later hopefully velocity) will be adjusted over each iteration.
+	
+	The problem I faced when slicing is there could be higher elevations with a water depth outside of this area, so when you look at the target, more water might be seen than there should be. to remidy this, I decided to use no padding and instead make the square 1 pixel in each direction larger for the input and the target is smaller. This hopefully will remedy this issue. <- this didn't work at all and I'm not entirely sure how to solve this problem now. because there is no 'run off' in the middle of the catchment area...
+\subsection{Loss function}
+The only loss function I implimented so far is MSE (or L2 loss). The loss function implimented in Joao's paper was a variation of MAE loss, which they don't specify.
+
+\subsection{evaluation}
+This I still need to work out. so far it's been by eye... But for now i can tell that it isn't working without an evaluation metric... Future me's problem
+ \bibliographystyle{plain} % We choose the "plain" reference style
+ \bibliography{refs} % Entries are in the refs.bib file
+\end{document}
