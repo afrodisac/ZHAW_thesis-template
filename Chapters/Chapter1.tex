@@ -10,7 +10,7 @@
 \subsection{Background}
 
 
-Floods are one of the most common forms of natural disasters that occur. Urban flooding is one of the key global challenges faced this century \cite{o2020drivers} as more people migrate to cities. Floods are often unexpected and pose serious risks to society \cite{russo2023evaluation}. In order to create useful prevention mechanisms, rapid modeling of the potential flood plain, preferably in real time,  would be needed for adequate counter-measures to be put in place. \\
+Floods are one of the most common natural disasters that occur. Urban flooding is one of the key global challenges faced this century \cite{o2020drivers} as more people migrate to cities for better opportunities. Floods are often unexpected and can pose serious risks to infrastructure, economy and societies \cite{russo2023evaluation}. Climate change is also increasing the risk of flooding in certain areas and is resulting in higher rates of extreme rainfall in areas that have never seen these types of weather patterns. In these areas in particular, infrastructure has not been built to accommodate these types of events. In order to create useful prevention mechanisms, rapid modeling of high risk areas, preferably in real time,  would be needed for adequate counter-measures to be put in place. \\
 
 There are many 2D flood models have been developed to simulate urban flooding however, their complexity and computational requirements limit their applicability \cite{Ghimire}, especially when real-time predictions are required. For this reason, other models have been developed with the sole goal of reducing computational power necessary for accurate, fast predictions. One of the most successful models introduced, is a Cellular Automata based model \cite{guidolin2016weighted}. Cellular automata are simple computer programs that only utilize local information to update cell states (like water depth in this case). However, these models are still limited in terms of computational time required. Even while running on a GPU (Graphical Processing Unit), depending on the resolution and size of the data, computational time ranges from seconds to hours. \\
 
@@ -19,13 +19,14 @@ Machine learning models have had recent success in many applications including f
 \subsection{Related work}
 Data driven approaches to flood modeling have shown a lot of success in recent years \cite{russo2023evaluation, karim2023review, chaudhary2022flood}. Many different architectures have been used such as Convolutional Neural Networks, Graph Neural Networks, Autencoders, Deep ensembles etc. They have all had success. However, none have been practically applied and have not achieved widespread adoption into flood risk management. 
 
-talk about Joao's papers
-some reviews etc
+Joao's papers... \\
+
+These models will be useful for evalatuation of models created for this thesis.
 
 This section is also small as they will be discussed in the theoretical background section of the report.
 
 \subsection{Objective}
-The overall objective for this thesis is to determine the viability of NCA's in the application of Flood modeling. We try to answer following questions:
+The overall objective for this thesis is to determine the viability of NCA's in the application of Flood modeling using only the DEM and rainfall events as features. We try to answer following questions:
 
 \begin{enumerate}
 	\item Evaluate NCA in the application of flood modeling 

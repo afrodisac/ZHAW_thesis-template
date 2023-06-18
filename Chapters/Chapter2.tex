@@ -6,35 +6,62 @@
 %----------------------------------------------------------------------------------------
 \chapter{Theoretical Background} % Main chapter title
 \label{Chapter2} % For referencing the chapter elsewhere, use \ref{Chapter1}
-In this chapter, the relevant literature and background information is discussed so the reader is more easily able to follow the thesis. 
+In this chapter, the relevant literature and background information is discussed.  
 \section{Cellular Automata}
-\subsection{What Are Cellular Automata}
-A Cellular Automaton (CA) is a system that typically consists of a discrete lattice or grid of cells.
-Each cell can have a discrete state, such as alive or dead, 0 or 1, etc. The cells in the grid are updated
-based on simple rules that depend on the cells’ local neighbourhood. The entire system is typically
-updated simultaneously. What makes these systems fascinating is that even with very simple rules,
-complex emergent behavior can arise.
-There are two well-known CA models that I will briefly mention:
+\subsection{A Brief History}
 
-\begin{enumerate}
-	\item Wolfram’s elementary CA is a one-dimensional CA with a local neighborhood of size 3, which
-	includes the cell itself and its right and left neighbors. Some of these rules result in simple
-	behavior, while others exhibit incredibly complex behaviors, such as the famous Rule 30 or the
-	Turing-complete Rule 110.
-	\item John Conway’s Game of Life is perhaps the most famous CA model. It is a two-dimensional
-	CA on a square lattice that has been extensively studied, with new discoveries still being made
-	to this day. This system uses the Moore’s neighborhood, which is a 3x3 neighborhood that
-	includes the central cell. The Game of Life produces incredible emergent behavior and is also
-	Turing-complete.
+Cellular Automata are fascinating computational models, which typically have very simple rules that result in complicated behavior. They were first introduced by John Von Neuman \cite{sarkar2000brief} as models for self-replicating organisms. Since then they have found relevance in an extremely wide variety of fields but mainly used in modeling biological and physical systems. \\
+Typically, Cellular Automata are modeled on a discrete 1D or 2D lattice. The most famous Cellular Automata are John Conway's Game of Life (GOL) and Steven Wolfram's Elemetary Cellular Automata, the former of which will be discussed in the below section.
+From here on 'Cellular Automata' and 'Cellular Automaton' will be referred to as CA.
+\subsection{What is a CA?}
+
+CA are some of the simplest computational models that exist. They consist of a discrete lattice or grid of cells (Typically these manifolds are 1D or 2D but can be $d$ dimensional). Each cell has a discrete state (or set of states). The most common of which, are binary states like in the case of Elementary CA and GOL \footnote{It is important to note, though, that variations of this exist and a lot of research has been done in the continuous state domain. A famous example of this within the CA community is Lenia: Smooth life \cite{chan2018lenia}. The reason for this note is CA used for flood modeling as well as some other systems utilize this continuous state system}. Probably the most important aspect of CA systems are their local update rules'. In order for a cell to be updated, the cell considers the states of itself, as well as the states of its neighbors, and based on some rule, the cell updates. In classical CA, cells update synchronously based on some global clock \footnote{This feature of classical CA also has variation, like in the case of stochastic CA \cite{fates2013stochastic}, where cells update asynchronously.}. Based on these features, very simple rules can result in extremely complex behaviour. \\
+To help build intuition about CA and its associated notation, I will discuss John Conway's Game Of Life. Game of Life will be mentioned a lot in this thesis because it is a simple example and widely known CA.
+
+\subsection{Mathematical Description of CA Using Game Of Life as an example}
+
+\subsubsection*{Defining Game Of Life}
+The following are the general rules written in natural language and in the subsequent section we will demonstrate the notation used for such as system.
+
+\begin{enumerate}[align=left]
+	\item[Grid:] The Game of Life is represented as a two-dimensional grid of cells. Each cell can be either alive or dead, usually represented by binary values: 1 for alive and 0 for dead. The grid is typically depicted as a matrix-like structure.
+	\item[Neighbourhood:] Each cell in the Game of Life has a neighborhood consisting of its eight adjacent cells. This neighborhood is known as the Moore neighborhood. The state of a cell is influenced by the states of its neighboring cells according to the game's rules.
+	\item[States:] In the Game of Life, each cell can be in one of two states: alive (1) or dead (0). This binary representation simplifies the rules and allows for the emergence of interesting patterns and behaviors.
+	\item[Local Update Rule:] The evolution of the Game of Life is determined by a set of rules that dictate how cells change their states over time. These rules are applied simultaneously to all cells in the grid. The rules of the Game of Life are as follows:
+	\begin{enumerate}
+		\item Any live cell with fewer than two live neighbors dies, as if by under population.
+		\item Any live cell with two or three live neighbors survives to the next generation.
+		\item Any live cell with more than three live neighbors dies, as if by overpopulation.
+		\item Any dead cell with exactly three live neighbors becomes alive, as if by reproduction.
+	\end{enumerate}
 \end{enumerate}
 
-\subsection{Common notation of CA}
-[placeholder]
+By applying these rules iteratively, the Game of Life evolves and creates various patterns, including static configurations, oscillators, and spaceships that move across the grid. The simplicity of the rules gives rise to complex and intriguing dynamics within the cellular automaton known as the Game of Life.
+
+\subsubsection*{Representing GOL Mathematically}
+
+ A general CA is represented as a 4-tuple:
+\begin{equation}
+	A = (d, S, N, f)
+\end{equation}
+
+where:
+
+\begin{align*}
+	A &  \text{ is the CA} \\
+	d &  \text{ is the dimensionality} \\
+	S &  \text{ is the set of possible states} \\
+	N &  \text{ is the neighbourhood} \\
+	f &  \text{ is the local update rule}
+\end{align*}
+
+
 \subsection{Why are they useful?}
 In the above section, although beautiful and impressive, the exampels are not practival. But the same motivation and methods can be extrapolated to model physicals systems. Especially many differentiable equations that can be descritized in time and space can be modeled using CA. Many examples have been demostrated over the years. In the following \ref{Chapter3}, the CADDIE2D model is discussed in detail. But other examples include: particle simulation, chemical reactions, fire modeling, human and animal dynaimcs to name a few. [must find references for this.]
 
 \section{Deep Learning}
 \subsection{What is deep learning}
+\subsection{The Tensorflow Framework}
 \subsection{Optimizers for backpropogation}
 \subsection{Common loss functions for regression tasks}
 I create this subsection because I think this needs to be carefully considered. For growing images, L2
