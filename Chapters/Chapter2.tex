@@ -92,15 +92,21 @@ $
 	1 & 1 & 1
 \end{bmatrix}
 $
-Kernel to be applied \\ \\
+Kernel $\omega$ to be applied \\ \\
 And activation function (or local update rule): \\ \\
 $
-f(convolution) = \begin{cases}
-	1, & \text{if } convolution = 3 \text{ or } convolution = 11 \text{ or } convolution = 12 \\
+%% I should really add more mathematics here
+f(x, y) = \begin{cases}
+	1, & \text{if } g(x, y) = 3 | 11 | 12 \\
 	0, & \text{otherwise}
 \end{cases}
 $ \\ \\
 
+Where:
+\begin{align*}
+	f &: \text{is the activation function} \\
+	g &: \text{is the convolusion}
+\end{align*}
 It turns out that CNN's can learn the rules of arbitrary CA's, for example game of life, and it doesn't need a particularly deep architecture to do so. it does this by essentially learning the kernel / filter weights that needs to be applied. To use a CNN as a CA, you essentially turn the CA into a binary classification problem to predict the state of each cell.
 
 \subsection{Neural Cellular Automata}
