@@ -60,6 +60,7 @@ where:
 In the above section, although beautiful and impressive, the exampels are not practival. But the same motivation and methods can be extrapolated to model physicals systems. Especially many differentiable equations that can be descritized in time and space can be modeled using CA. Many examples have been demostrated over the years. In the following \ref{Chapter3}, the CADDIE2D model is discussed in detail. But other examples include: particle simulation, chemical reactions, fire modeling, human and animal dynaimcs to name a few. [must find references for this.]
 
 \section{Deep Learning}
+Deep learning is a 
 \subsection{What is deep learning}
 \subsection{The Tensorflow Framework}
 \subsection{Optimizers for backpropogation}
@@ -84,7 +85,22 @@ CNNs have achieved state-of-the-art performance on many computer vision tasks, s
 \subsection{CNN as a CA}
 As it turns out, CNN's and CA's are extremely similar. Cellular automata (CA) and convolutional neural networks (CNN) are both types of mathematical models that can be used to process and analyze data with a grid-like structure, such as images or time series data. \cite{PhysRevE.100.032402}
 
-Both models operate by processing the input data in a local and hierarchical manner. In a CA, the state of each cell is updated based on the states of its neighboring cells, while in a CNN, filters are applied to local patches of the input data to extract relevant features. However, one can think of a neighbourhood as a NxM kernel filled with 1s. In fact, by utilizing a cleverly constructed kernel and activation function, one can model many CA's by performing this convolution and applying an activation function. A simple example of this is game of life as a convolusion: \\ \\
+Both models operate by processing the input data in a local and hierarchical manner. In a CA, the state of each cell is updated based on the states of its neighboring cells, while in a CNN, filters are applied to local patches of the input data to extract relevant features. However, one can think of a neighbourhood as a NxM kernel filled with 1s. In fact, by utilizing a cleverly constructed kernel and activation function, one can model many CA by performing this convolution and applying an activation function. A simple example of this would be game of life represented as a convolution. \\
+
+A convolution is defined as: \\
+
+\begin{equation*}
+	g(x,y) = \omega f(x, y)
+\end{equation*}
+Where:
+\begin{align*}
+	f &: \text{is the function to be convolved} \\
+	\omega &: \text{is the kernel}  \\
+	g &: \text{is the convolution} 
+\end{align*} 
+
+We can create a kernel, $\omega$, which looks like: \\
+
 $
 \begin{bmatrix}
 	1 & 1 & 1 \\
@@ -92,21 +108,20 @@ $
 	1 & 1 & 1
 \end{bmatrix}
 $
-Kernel $\omega$ to be applied \\ \\
-And activation function (or local update rule): \\ \\
-$
+\\
+
+And then add an activation function, $\sigma$: \\ \\
+
 %% I should really add more mathematics here
-f(x, y) = \begin{cases}
+$
+\sigma(x, y) = \begin{cases}
 	1, & \text{if } g(x, y) = 3 | 11 | 12 \\
 	0, & \text{otherwise}
 \end{cases}
-$ \\ \\
+$
+\\ \\
 
-Where:
-\begin{align*}
-	f &: \text{is the activation function} \\
-	g &: \text{is the convolusion}
-\end{align*}
+
 It turns out that CNN's can learn the rules of arbitrary CA's, for example game of life, and it doesn't need a particularly deep architecture to do so. it does this by essentially learning the kernel / filter weights that needs to be applied. To use a CNN as a CA, you essentially turn the CA into a binary classification problem to predict the state of each cell.
 
 \subsection{Neural Cellular Automata}
