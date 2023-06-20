@@ -40,16 +40,16 @@ By applying these rules iteratively, the Game of Life evolves and creates variou
 
 \subsubsection*{Representing GOL Mathematically}
 
- An arbitrary CA is represented as a 4-tuple:
+ An arbitrary CA is typically represented as a 4-tuple, with time, $T$, left out:
 \begin{equation}
-	A = (d, S, N, f)
+	A = (L, S, N, f)
 \end{equation}
 
 where:
 
 \begin{align*}
 	A &  \text{ is the CA} \\
-	d &  \text{ is the dimensionality} \\
+	L &  \text{ is the } d \text{-dimensional lattice} \\
 	S &  \text{ is the set of possible states} \\
 	N &  \text{ is the neighbourhood} \\
 	f &  \text{ is the local update rule}
@@ -62,7 +62,88 @@ In the above section, although beautiful and impressive, the examples are not pr
 \section{Deep Learning}
 \subsection{What Is Deep Learning}
 
-Deep learning is a subset of techniques within a class of algorithms called Machine Learning (ML). In general ML algorithms power increasingly more of our day to day lives \cite{lecun2015deep}. From auto-correct on word processors and cell phones, to search engines, to recommendation systems, and even self-driving cars. The list goes on. \\
+Deep learning is a subset of techniques within a class of algorithms called Machine Learning (ML). In general, ML algorithms power increasingly more of our day to day lives \cite{lecun2015deep}. From auto-correct on word processors, to search engines, to recommendation systems, and even self-driving cars. The list goes on. \\
+
+Deep learning is derived from simple neural networks. The consist of nodes and edges. They tend to look like this:
+
+% Input layer neurons'number
+\newcommand{\inputnum}{3} 
+
+% Hidden layer neurons'number
+\newcommand{\hiddennum}{5}  
+
+% Output layer neurons'number
+\newcommand{\outputnum}{2} 
+
+\begin{tikzpicture}
+
+	% Input Layer
+	\foreach \i in {1,...,\inputnum}
+	{
+		\node[circle, 
+		minimum size = 6mm,
+		fill=orange!30] (Input-\i) at (0,-\i) {};
+	}
+	
+	% Hidden Layer
+	\foreach \i in {1,...,\hiddennum}
+	{
+		\node[circle, 
+		minimum size = 6mm,
+		fill=teal!50,
+		yshift=(\hiddennum-\inputnum)*5 mm
+		] (Hidden-\i) at (2.5,-\i) {};
+	}
+	
+	% Output Layer
+	\foreach \i in {1,...,\outputnum}
+	{
+		\node[circle, 
+		minimum size = 6mm,
+		fill=purple!50,
+		yshift=(\outputnum-\inputnum)*5 mm
+		] (Output-\i) at (5,-\i) {};
+	}
+	
+	% Connect neurons In-Hidden
+	\foreach \i in {1,...,\inputnum}
+	{
+		\foreach \j in {1,...,\hiddennum}
+		{
+			\draw[->, shorten >=1pt] (Input-\i) -- (Hidden-\j);   
+		}
+	}
+	
+	% Connect neurons Hidden-Out
+	\foreach \i in {1,...,\hiddennum}
+	{
+		\foreach \j in {1,...,\outputnum}
+		{
+			\draw[->, shorten >=1pt] (Hidden-\i) -- (Output-\j);
+		}
+	}
+	
+	% Inputs
+	\foreach \i in {1,...,\inputnum}
+	{            
+		\draw[<-, shorten <=1pt] (Input-\i) -- ++(-1,0)
+		node[left]{$x_{\i}$};
+	}
+	
+	% Outputs
+	\foreach \i in {1,...,\outputnum}
+	{            
+		\draw[->, shorten <=1pt] (Output-\i) -- ++(1,0)
+		node[right]{$y_{\i}$};
+	}
+	
+\end{tikzpicture}
+
+The main difference between classical ML and DL is the former tends to require large amounts of domain knowledge and heavy feature engineering. "The best deep learning models require no domain knowledge" (Personal Communication, Edan need to find surname). 
+Artificial Neural Networks can learn the feature importance. \\
+
+maybe too far??
+
 
 Things to talk about:
 \begin{itemize}
@@ -75,7 +156,7 @@ Things to talk about:
 \end{itemize}
 \subsection{The Tensorflow Framework}
 \begin{itemize}
-	\item Quickly mention the framework and how it is an extremely popular and fast library in python for building deep learning models
+	\item Quickly mention the framework and how it is an extremely popular and fast library in python for building deep learning models. It mainly works through the use of tensors (d-dimensional matrix). It has many useful functions for creating models, performing back propogation. There are two other frameworks that people generally use: JaX and Pytorch. The descision for which to use is relatively arbitrary and is typcially based on what a company / researcher has used in the past.
 \end{itemize}
 \subsection{Optimizers for backpropogation}
 \subsection{Common loss functions for regression tasks}
