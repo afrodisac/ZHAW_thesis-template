@@ -4,37 +4,39 @@
 % APPENDIX A
 %----------------------------------------------------------------------------------------
 
-\chapter{Frequently Asked Questions} % Main appendix title
+\chapter{Extra Notes on Deep Learning and materials} % Main appendix title
 
 \label{AppendixA} % For referencing this appendix elsewhere, use \ref{AppendixA}
 
-\section{How do I change the colors of links?}
+\section{Simple multilayer perceptron}
 
-The color of links can be changed to your liking using:
-
-{\small\verb!\hypersetup{urlcolor=red}!}, or
-
-{\small\verb!\hypersetup{citecolor=green}!}, or
-
-{\small\verb!\hypersetup{allcolor=blue}!}.
-
-\noindent If you want to completely hide the links, you can use:
-
-{\small\verb!\hypersetup{allcolors=.}!}, or even better: 
-
-{\small\verb!\hypersetup{hidelinks}!}.
-
-\noindent If you want to have obvious links in the PDF but not the printed text, use:
-
-{\small\verb!\hypersetup{colorlinks=false}!}
-
-\section{How can I add a Figure in the Appendix?}
-
-You can refer to a figure in the Appendix (like \ref{fig:appendix-figure}) and it will show up as expected.
-
-\begin{figure}
-\includegraphics[width=0.25\textwidth]{../Figures/Bart_Simpson.png}
-\centering
-\caption[A random appendix figure]{Bart Simpson. (2023, May 17). In Wikipedia. \url{https://en.wikipedia.org/wiki/Bart_Simpson}}
-\label{fig:appendix-figure}
+\begin{figure}[h]
+	\includegraphics[width=0.75\textwidth]{../Figures/neural-network.png}
+%	\centering
+	\caption[An ANN]{A simple depiction of an artificial neural network} \url{https://texample.net/tikz/examples/neural-network/}
+\label{fig:appendix-mlp}
 \end{figure}
+
+\begin{equation*}
+	y =  \sigma\left(\sum WX + B\right)
+\end{equation*}
+Where
+\begin{align*}
+	y &  \text{ is the output or hidden layer} \\
+	\sigma &  \text{is the activation function} \\
+	X &  \text{ is the input vector} \\
+	W &  \text{ is the weight vector} \\
+	B &  \text{ Bias}
+\end{align*}
+Where Edges are weights and nodes are the sum of the weights *inputs + bias. An activation function like sigmoid or ReLu (which performs a kind of smooth mapping) is applied to this sum.
+
+%\section{How can I add a Figure in the Appendix?}
+%
+%You can refer to a figure in the Appendix (like \ref{fig:appendix-figure}) and it will show up as expected.
+%
+%\begin{figure}
+%\includegraphics[width=0.25\textwidth]{../Figures/Bart_Simpson.png}
+%\centering
+%\caption[A random appendix figure]{Bart Simpson. (2023, May 17). In Wikipedia. \url{https://en.wikipedia.org/wiki/Bart_Simpson}}
+%\label{fig:appendix-figure}
+%\end{figure}

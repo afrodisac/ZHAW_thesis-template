@@ -8,24 +8,25 @@
 \label{Chapter2} % For referencing the chapter elsewhere, use \ref{Chapter1}
 In this chapter, the relevant literature and background information is discussed.  
 \section{Cellular Automata}
-\subsection{A Brief History}
+\subsection{An Overview}
 
 Cellular Automata are fascinating computational models, which typically have very simple rules that result in complicated behavior. They were first introduced by John Von Neuman \cite{sarkar2000brief} as models for self-replicating organisms. Since then they have found relevance in an extremely wide variety of fields but mainly used in modeling biological and physical systems. \\
+
 Typically, Cellular Automata are modeled on a discrete 1D or 2D lattice. The most famous Cellular Automata are John Conway's Game of Life (GOL) and Steven Wolfram's Elemetary Cellular Automata, the former of which will be discussed in the below section.
 From here on 'Cellular Automata' and 'Cellular Automaton' will be referred to as CA.
 \subsection{What is a CA?}
 
 CA are some of the simplest computational models that exist. They consist of a discrete lattice or grid of cells (Typically these manifolds are 1D or 2D but can be $d$ dimensional). Each cell has a discrete state (or set of states). The most common of which, are binary states like in the case of Elementary CA and GOL \footnote{It is important to note, though, that variations of this exist and a lot of research has been done in the continuous state domain. A famous example of this within the CA community is Lenia: Smooth life \cite{chan2018lenia}. The reason for this note is CA used for flood modeling as well as some other systems utilize this continuous state system}. Probably the most important aspect of CA systems are their local update rules'. In order for a cell to be updated, the cell considers the states of itself, as well as the states of its neighbors, and based on some rule, the cell updates. In classical CA, cells update synchronously based on some global clock \footnote{This feature of classical CA also has variation, like in the case of stochastic CA \cite{fates2013stochastic}, where cells update asynchronously.}. Based on these features, very simple rules can result in extremely complex behaviour. \\
-To help build intuition about CA and its associated notation, I will discuss John Conway's Game Of Life. Game of Life will be mentioned a lot in this thesis because it is a simple example and widely known CA.
+To help build intuition about CA and its associated notation, I will discuss John Conway's Game Of Life (GOL). GOL will be mentioned a lot in this thesis because it is a simple example and widely known CA.
 
-\subsection{Mathematical Description of CA Using Game Of Life as an example}
+\subsection{Mathematical Description of CA}
 
 \subsubsection*{Defining Game Of Life}
 The following are the general rules written in natural language and in the subsequent section we will demonstrate the notation used for such as system.
 
 \begin{enumerate}[align=left]
 	\item[Grid:] The Game of Life is represented as a two-dimensional grid of cells. Each cell can be either alive or dead, usually represented by binary values: 1 for alive and 0 for dead. The grid is typically depicted as a matrix-like structure.
-	\item[Neighbourhood:] Each cell in the Game of Life has a neighborhood consisting of its eight adjacent cells. This neighborhood is known as the Moore neighborhood. The state of a cell is influenced by the states of its neighboring cells according to the game's rules.
+	\item[Neighbourhood:] Each cell in the Game of Life has a neighborhood consisting of its eight adjacent cells, $\{-1, 0, 1\}^{2}$. This neighborhood is known as the Moore neighborhood. The state of a cell is influenced by the states of its neighboring cells according to the game's rules.
 	\item[States:] In the Game of Life, each cell can be in one of two states: alive (1) or dead (0). This binary representation simplifies the rules and allows for the emergence of interesting patterns and behaviors.
 	\item[Local Update Rule:] The evolution of the Game of Life is determined by a set of rules that dictate how cells change their states over time. These rules are applied simultaneously to all cells in the grid. The rules of the Game of Life are as follows:
 	\begin{enumerate}
@@ -41,7 +42,7 @@ By applying these rules iteratively, the Game of Life evolves and creates variou
 \subsubsection*{Representing GOL Mathematically}
 
  An arbitrary CA is typically represented as a 4-tuple, with time, $T$, left out:
-\begin{equation}
+\begin{equation} \label{eq:2.1}
 	A = (L, S, N, f)
 \end{equation}
 
@@ -57,131 +58,56 @@ where:
 
 \textbf{need to add the math here}
 \subsection{Why are they useful?}
-In the above section, although beautiful and impressive, the examples are not practival. But the same motivation and methods can be extrapolated to model physical or biological systems. Especially many differentiable equations that can be descritized in time and space can be modeled using CA. Many examples have been demonstrated over the years. In the following \ref{Chapter3}, the CADDIE2D model is discussed in detail. But other examples include: particle simulation, chemical reactions, fire modeling, human and animal dynamics to name a few. [must find references for this.]
+In the above section, although beautiful and impressive, the examples are not practival. But the same motivation and methods can be extrapolated to model physical or biological systems. Especially many differentiable equations that can be descritized in time and space can be modeled using CA. Many examples have been demonstrated over the years. In the following chapter \ref{Chapter3}, the CADDIE2D model is discussed in detail. But other examples include: particle simulation, chemical reactions, fire modeling, human and animal dynamics to name a few. [must find references for this.]
 
 \section{Deep Learning}
 \subsection{What Is Deep Learning}
 
-Deep learning is a subset of techniques within a class of algorithms called Machine Learning (ML). In general, ML algorithms power increasingly more of our day to day lives \cite{lecun2015deep}. From auto-correct on word processors, to search engines, to recommendation systems, and even self-driving cars. The list goes on. \\
+Deep learning is a subset of techniques within a class of algorithms known as Machine Learning (ML). In general, ML algorithms power increasingly more of our day to day lives \cite{lecun2015deep}. From auto-correct, to search engines, to recommendation systems, and even self-driving cars. The main difference between classical ML and DL is the former tends to require large amounts of domain knowledge and feature engineering to achieve good results. One of the main benefits of DL is their ability learn which features are important. However, classical ML tends to require a lot less data than DL models do. \\
 
-Deep learning is derived from simple neural networks. The consist of nodes and edges. They tend to look like this:
+ DL models are derived from simple neural networks (or multilayer perceptrons), which are motivated by biological neurons. They consist of a sequence of interconnected nodes, which creates a nonlinear mapping between inputs and outputs \cite{gardner1998artificial}. These nodes are connected by weights and signals are created via summing the inputs to the node and passed through an activation function making the system non-linear. By doing this, it is possible for the model to approximate complicated non-linear functions. A figure of a simple multilayer perceptron is in the appendix \ref{fig:appendix-mlp}. \\
+ 
+ There are three main categories of deep learning: Supervised learning, Unsupervised learning, and reinforcement learning. \cite{alzubaidi2021review}. And within these three categories there are many different techniques. This thesis only considers the convolutional neural network, which is a type of supervised learning technique / architecture. 
 
-% Input layer neurons'number
-\newcommand{\inputnum}{3} 
-
-% Hidden layer neurons'number
-\newcommand{\hiddennum}{5}  
-
-% Output layer neurons'number
-\newcommand{\outputnum}{2} 
-
-\begin{tikzpicture}
-
-	% Input Layer
-	\foreach \i in {1,...,\inputnum}
-	{
-		\node[circle, 
-		minimum size = 6mm,
-		fill=orange!30] (Input-\i) at (0,-\i) {};
-	}
 	
-	% Hidden Layer
-	\foreach \i in {1,...,\hiddennum}
-	{
-		\node[circle, 
-		minimum size = 6mm,
-		fill=teal!50,
-		yshift=(\hiddennum-\inputnum)*5 mm
-		] (Hidden-\i) at (2.5,-\i) {};
-	}
-	
-	% Output Layer
-	\foreach \i in {1,...,\outputnum}
-	{
-		\node[circle, 
-		minimum size = 6mm,
-		fill=purple!50,
-		yshift=(\outputnum-\inputnum)*5 mm
-		] (Output-\i) at (5,-\i) {};
-	}
-	
-	% Connect neurons In-Hidden
-	\foreach \i in {1,...,\inputnum}
-	{
-		\foreach \j in {1,...,\hiddennum}
-		{
-			\draw[->, shorten >=1pt] (Input-\i) -- (Hidden-\j);   
-		}
-	}
-	
-	% Connect neurons Hidden-Out
-	\foreach \i in {1,...,\hiddennum}
-	{
-		\foreach \j in {1,...,\outputnum}
-		{
-			\draw[->, shorten >=1pt] (Hidden-\i) -- (Output-\j);
-		}
-	}
-	
-	% Inputs
-	\foreach \i in {1,...,\inputnum}
-	{            
-		\draw[<-, shorten <=1pt] (Input-\i) -- ++(-1,0)
-		node[left]{$x_{\i}$};
-	}
-	
-	% Outputs
-	\foreach \i in {1,...,\outputnum}
-	{            
-		\draw[->, shorten <=1pt] (Output-\i) -- ++(1,0)
-		node[right]{$y_{\i}$};
-	}
-	
-\end{tikzpicture}
+\subsection{Convolutional Neural Networks}
+\subsubsection*{A Brief Overview}
+A Convolutional Neural Network (CNN) is a type of Artificial Neural Network (ANN) that is commonly used in image and video recognition , natural language processing, and other tasks that involve processing input data with a grid-like structure \cite{li2021survey}. CNN's, like MLP's, are biologically motivated, however, CNN's can be said to mimic an animal's visual cortex \cite{angermueller2016deep}. They are  able to extract important spatial features such as edges and corners of images but are also able to extract extremely complex features \cite{KATTENBORN202124}. CNN's are much better at image-related tasks than MLP's. One of the greatest aspects of CNN's is the kernel. The same weights are applied to whole image. This greatly reduces the parameter count coompoared to MLP's where every input node is connected to every output node. This allows CNN's to be trained much faster than MLP's.
 
-The main difference between classical ML and DL is the former tends to require large amounts of domain knowledge and heavy feature engineering. "The best deep learning models require no domain knowledge" (Personal Communication, Edan need to find surname). 
-Artificial Neural Networks can learn the feature importance. \\
+\subsubsection*{Common Components of a CNN Architecture} \label{CNN:components}
+An example of a typical CNN architecture can be seen in figure \ref{CNN:components}
+\begin{enumerate}[align=left]
+	\item[Convolutional Layer:] This is what makes a CNN a CNN, this layer applies a set of filters to the input data to extract relevant features for the task at hand. The filters are typically small in size and designed to detect patterns, such as edges or corners. The output of the convolutional layer then goes through a non-linear activation function, such as the rectified linear unit (ReLU) \footnote{ReLU is generally the preferred activation function because it tends to allow for much faster training \cite{krizhevsky2017imagenet}}, which introduces non-linearity into the network.
+	\item[Deepthwise Convolutional Layer:] This is an interesting component and is not incredibly common. It allows for the feature mapping in specific channels. This makes it easier for the model to extract important features because it doesn't have to simultaneously learn all three channels at once \cite{chollet2017xception}.
+	\item[Pooling Layer:] This layer is meant to reduce parameter count and extract important features from the previous convolutional output. There are two types of common pooling layers: \begin{enumerate}
+		\item[1:] Max Pooling. This applies a convolution that extracts the maximum value from the neighbourhood.
+		\item[2:] Average Pooling. This applies a convolution and takees the average of the neighbourhood.
+	\end{enumerate}
+	\item[1x1 Convolutional layer:] This layer is very similar to a fully connected layer. It is used for dimensionality reduction or promotion. One can think of this as mini neural network for each pixel \ element of the previous layers output. The output of a 1x1xD convolution will have the same spatial resolution as the input into this layer with D channels.
+	\item[Fully Connected Layer:] This layer is just a typical MLP and is often used as the output layer for classification tasks. It works by connecting each element of the previous layer to each output node.
+\end{enumerate}
 
-maybe too far??
+\begin{figure}
+	\includegraphics[width=0.75\textwidth]{../Figures/classical_cnn.png}
+	\centering
+	\caption[CNN]{A simple CNN architecture taken directly from the \citetitle{alzubaidi2021review} paper \cite{alzubaidi2021review}} 
+	\label{simple_cnn}
+\end{figure}
+
+\subsubsection*{How Do CNN's Learn?}
+The first step in order to train a CNN is to employ a loss function. There are many different types of loss functions that exist. Only common loss functions used for regression tasks will be mentioned due to the nature of this thesis.
 
 
-Things to talk about:
-\begin{itemize}
-	\item What is classical ML
-	\item What is the problem with classical approaches
-	\item What is deep learning and how does it improve on classical ML
-	\item Briefly backprop and optimizers and loss functions
-	\item I guess CNN's will go in here too
-	\item general evaluation of model and importance of generalization
-\end{itemize}
 \subsection{The Tensorflow Framework}
 \begin{itemize}
 	\item Quickly mention the framework and how it is an extremely popular and fast library in python for building deep learning models. It mainly works through the use of tensors (d-dimensional matrix). It has many useful functions for creating models, performing back propogation. There are two other frameworks that people generally use: JaX and Pytorch. The descision for which to use is relatively arbitrary and is typcially based on what a company / researcher has used in the past.
 \end{itemize}
-\subsection{Optimizers for backpropogation}
-\subsection{Common loss functions for regression tasks}
-I create this subsection because I think this needs to be carefully considered. For growing images, L2
-loss is clearly the best option to reproduce images / learning to grow them. However, depending on
-the application of these models the loss function needs to be carefully considered and there are many
-to choose from. An example of this is from the paper [3, Self-Organizing Textures] where they use a
-L2 loss of gram-matrices by using the raw activations of VGG (Visual Geometry Group Net).
-Here we can also look into applying physical constraints to the model, for e.g. adhering to energy
-/ mass conservation.
-\subsection{Convolutional Neural Network}
-
-A Convolutional Neural Network (CNN) is a type of Artificial Neural Network (ANN) that is commonly used in image and video recognition, natural language processing, and other tasks that involve processing input data with a grid-like structure.
-
-The key characteristic of a CNN is the use of convolutional layers, which apply a set of filters to the input data to extract relevant features for the task at hand. The filters are typically small in size and designed to detect simple patterns, such as edges or corners. The output of the convolutional layer then goes through a non-linear activation function, such as the rectified linear unit (ReLU), to introduce non-linearity into the network.
-
-In addition to convolutional layers, a CNN may also include other types of layers such as pooling layers, which reduce the spatial dimensions of the input data by selecting the maximum or average value from a set of neighboring pixels, and fully connected layers, which connect every neuron in one layer to every neuron in the next layer.
-
-CNNs have achieved state-of-the-art performance on many computer vision tasks, such as image classification, object detection, and segmentation, and are widely used in industry and academia.
 
 \section{The Relationship Between CA and CNN}
 \subsection{CNN as a CA}
-As it turns out, CNN's are extremely similar. Cellular automata (CA) and convolutional neural networks (CNN) are both types of mathematical models that can be used to process and analyze data with a grid-like structure, such as images or time series data. \cite{PhysRevE.100.032402}
+As it turns out, CNN's are extremely similar \footnote{The idea for this section came from personal communication (Dr. Martin Schüle, May 2023)}. Cellular automata (CA) and convolutional neural networks (CNN) are both types of mathematical models that can be used to process and analyze data with a grid-like structure, such as images or time series data. \cite{PhysRevE.100.032402}
 
-Both models operate by processing the input data in a local and hierarchical manner. In a CA, the state of each cell is updated based on the states of its neighboring cells, while in a CNN, filters are applied to local patches of the input data to extract relevant features. However, one can think of a neighbourhood as a $NxM$ kernel or filter. In fact, by utilizing a cleverly constructed kernel and activation function, one can model many CA. A simple example of this would be game of life represented as a convolution. \\
+Both models operate by processing the input data in a local and hierarchical manner. In a CA, the state of each cell is updated based on the states of its neighboring cells. In the case of Wolfram's Elementary CA and GOL, this is done with a look-up table. CNN's use filters / kernels, which are applied to local patches of the input data to extract relevant features. However, one can think of a neighbourhood as a $NxM$ kernel or filter. In fact, by utilizing a cleverly constructed kernel and activation function, one can model many CA. A simple example of this would be game of life represented as a convolution. \\
 
 A convolution is defined as: \\
 
@@ -195,30 +121,35 @@ Where:
 	g &: \text{is the convolution} 
 \end{align*} 
 
-We can create a kernel, $\omega$, which looks like: \\
+For GOL we define the kernel as,
+\begin{gather*}
+	\omega = 
+	\begin{bmatrix}
+		1 & 1 & 1 \\
+		1 & 9 & 1 \\
+		1 & 1 & 1
+	\end{bmatrix}
+\end{gather*}
 
-$
-\begin{bmatrix}
-	1 & 1 & 1 \\
-	1 & 9 & 1 \\
-	1 & 1 & 1
-\end{bmatrix}
-$
-\\
 
 And then add an activation function, $\sigma$: \\ \\
 
-%% I should really add more mathematics here
 $
 \sigma(x, y) = \begin{cases}
-	1, & \text{if } g(x, y) = 3 | 11 | 12 \\
-	0, & \text{otherwise}
+	1, & \text{if } g(x, y) \in \{3, 11, 12\} \\
+	0, & \text{else}
 \end{cases}
 $
 \\ \\
 
-
-It turns out that CNN's can learn the rules of arbitrary CA's, for example game of life, and it doesn't need a particularly deep architecture to do so. it does this by essentially learning the kernel / filter weights that needs to be applied. To use a CNN as a CA, you essentially turn the CA into a binary classification problem to predict the state of each cell.
+Then the components of the 4-tuple \ref{eq:2.} become,
+\begin{align*}
+	L &  \text{ is the } d \text{-dimensional lattice} \\
+	S &  \text{ is the set of possible states} \\
+	N &  \text{ is the neighbourhood} \\
+	f &  \text{ is the local update rule}
+\end{align*} 
+It turns out that CNN's can learn the rules of arbitrary CA's \cite{PhysRevE.100.032402}, for example game of life, and it doesn't need a particularly deep architecture to do so. it does this by essentially learning the kernel / filter weights that needs to be applied. To use a CNN as a CA, you essentially turn the CA into a binary classification problem to predict the state of each cell.
 
 \subsection{Neural Cellular Automata}
 

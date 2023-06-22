@@ -67,6 +67,6 @@ There were some issues with this method though. If you don't have a sufficiently
 \subsection{Custom L2 loss}
 Due to the nature of the data (extremely small values), the loss starts off extrememly small (example of loss here based on real values). The model also really liked to predict 0 and try to just predict the last timestep. so we create a loss function to weight the 0's according to how many 0s appear in the data. We also try to mask it so that the model cannot predict less than 0 (constraint model)
 \section{Proposed Evaluation}
-The proposed evaluation of the model is based on a very simple heuristic. Can the model perform better than prediciting the previous timestep? (i.e. $\delta{Xt} = \delta{Xt-1}$ )
+The proposed evaluation of the model is based on a very simple heuristic. Can the model perform better than prediciting the previous timestep? (i.e. $\Delta{X_{t}} = \Delta{X_{t-1}}$)
 \section{Pipeline Creation}
 The creation of a pipline for training became extremely important for testing many parameters at once with different configurations for the dataset, training reigime, model creation. It allowed us to test multiple things in parrelel.
