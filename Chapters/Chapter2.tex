@@ -49,11 +49,11 @@ By applying these rules iteratively, the Game of Life evolves and creates variou
 where:
 
 \begin{align*}
-	A &  \text{ is the CA} \\
-	L &  \text{ is the } d \text{-dimensional lattice} \\
-	S &  \text{ is the set of possible states} \\
-	N &  \text{ is the neighbourhood} \\
-	f &  \text{ is the local update rule}
+	A 	&  \text{ is the CA} \\
+	L 	&  \text{ is the } d \text{-dimensional lattice} \\
+	S 	&  \text{ is the set of possible states} \\
+	N 	&  \text{ is the neighbourhood} \\
+	f 	&  \text{ is the local update rule}
 \end{align*}
 
 \textbf{need to add the math here}
@@ -62,17 +62,16 @@ In the above section, although beautiful and impressive, the examples are not pr
 
 \section{Deep Learning}
 \subsection{What Is Deep Learning}
-
 Deep learning is a subset of techniques within a class of algorithms known as Machine Learning (ML). In general, ML algorithms power increasingly more of our day to day lives \cite{lecun2015deep}. From auto-correct, to search engines, to recommendation systems, and even self-driving cars. The main difference between classical ML and DL is the former tends to require large amounts of domain knowledge and feature engineering to achieve good results. One of the main benefits of DL is their ability learn which features are important. However, classical ML tends to require a lot less data than DL models do. \\
 
- DL models are derived from simple neural networks (or multilayer perceptrons), which are motivated by biological neurons. They consist of a sequence of interconnected nodes, which creates a nonlinear mapping between inputs and outputs \cite{gardner1998artificial}. These nodes are connected by weights and signals are created via summing the inputs to the node and passed through an activation function making the system non-linear. By doing this, it is possible for the model to approximate complicated non-linear functions. A figure of a simple multilayer perceptron is in the appendix \ref{fig:appendix-mlp}. \\
+ DL models are derived from simple neural networks (or multilayer perceptrons), which are motivated by biological neurons. They consist of a sequence of interconnected nodes, which creates a nonlinear mapping between inputs and outputs \cite{gardner1998artificial}. These nodes are connected by weights and signals are created via summing the inputs to the node and passed through an activation function making the system non-linear. By doing this, it is possible for the model to approximate complicated non-linear functions. A figure of a simple multilayer perceptron is in the appendix \ref{AppendixA} \ref{fig:appendix-mlp}. \\
  
  There are three main categories of deep learning: Supervised learning, Unsupervised learning, and reinforcement learning. \cite{alzubaidi2021review}. And within these three categories there are many different techniques. This thesis only considers the convolutional neural network, which is a type of supervised learning technique / architecture. 
 
 	
 \subsection{Convolutional Neural Networks}
 \subsubsection*{A Brief Overview}
-A Convolutional Neural Network (CNN) is a type of Artificial Neural Network (ANN) that is commonly used in image and video recognition , natural language processing, and other tasks that involve processing input data with a grid-like structure \cite{li2021survey}. CNN's, like MLP's, are biologically motivated, however, CNN's can be said to mimic an animal's visual cortex \cite{angermueller2016deep}. They are  able to extract important spatial features such as edges and corners of images but are also able to extract extremely complex features \cite{KATTENBORN202124}. CNN's are much better at image-related tasks than MLP's. One of the greatest aspects of CNN's is the kernel. The same weights are applied to whole image. This greatly reduces the parameter count coompoared to MLP's where every input node is connected to every output node. This allows CNN's to be trained much faster than MLP's.
+A Convolutional Neural Network (CNN) is a type of Artificial Neural Network (ANN) that is commonly used in image and video recognition , natural language processing, and other tasks that involve processing input data with a grid-like structure \cite{li2021survey}. CNN's, like MLP's, are biologically motivated, however, CNN's can be said to mimic an animal's visual cortex \cite{angermueller2016deep}. They are  able to extract important spatial features such as edges and corners of images but are also able to extract extremely complex features \cite{KATTENBORN202124}. CNN's are much better at image-related tasks than MLP's. One of the greatest aspects of CNN's is the kernel. The same weights are applied to whole image. This greatly reduces the parameter count compared to MLP's where every input node is connected to every output node. This allows CNN's to be trained much faster than MLP's.
 
 \subsubsection*{Common Components of a CNN Architecture} \label{CNN:components}
 An example of a typical CNN architecture can be seen in figure \ref{CNN:components}
@@ -95,15 +94,32 @@ An example of a typical CNN architecture can be seen in figure \ref{CNN:componen
 \end{figure}
 
 \subsubsection*{How Do CNN's Learn?}
-The first step in order to train a CNN is to employ a loss function. There are many different types of loss functions that exist. Only common loss functions used for regression tasks will be mentioned due to the nature of this thesis.
+The first step in order to train a CNN is to employ a loss function. There are many different types of loss functions that exist. Only loss functions used for regression tasks \footnote{A regression task involves predicting the actual values of interest apposed to a label like in classification tasks, which requires a different activation function in the output and a different loss functions.} will be mentioned due to the nature of this thesis. \\
 
+The first is Mean Squared Error (MSE),
 
-\subsection{The Tensorflow Framework}
-\begin{itemize}
-	\item Quickly mention the framework and how it is an extremely popular and fast library in python for building deep learning models. It mainly works through the use of tensors (d-dimensional matrix). It has many useful functions for creating models, performing back propogation. There are two other frameworks that people generally use: JaX and Pytorch. The descision for which to use is relatively arbitrary and is typcially based on what a company / researcher has used in the past.
-\end{itemize}
+\begin{equation}
+	\label{eq:2.2}
+	MSE = \frac{1}{n}\sum_{i=1}^{n}\left(y_{i} - \hat{y}_{i}\right)^{2}
+\end{equation}
+
+where,
+\begin{align*}
+	n &  \text{ is the number of samples} \\
+	y_{i} &  \text{ is the target value }\\
+	\hat{y}_{i} &  \text{ predicted value} \\
+\end{align*}
+
+The second is Mean Absolute Error (MAE),
+\begin{equation}
+	\label{eq:2.3}
+	MAE = \frac{\sum_{i=1}^{n}\left|y_{i} - \hat{y}_{i}\right|}{n}
+\end{equation}
+
+It is important to note that a loss function must be differentiable. The way neural networks are able to learn such complicated non-linear functions is because of the backpropagation algorithm. An optimizer algorithm like gradient descent (although many more exist) is used to minimize this loss function by driving it towards zero. It does this by calculating the optimizer with respect to the weight values for various inputs.
 
 \section{The Relationship Between CA and CNN}
+\label{ca-cnn}
 \subsection{CNN as a CA}
 As it turns out, CNN's are extremely similar \footnote{The idea for this section came from personal communication (Dr. Martin Schüle, May 2023)}. Cellular automata (CA) and convolutional neural networks (CNN) are both types of mathematical models that can be used to process and analyze data with a grid-like structure, such as images or time series data. \cite{PhysRevE.100.032402}
 
@@ -142,15 +158,33 @@ $
 $
 \\ \\
 
-Then the components of the 4-tuple \ref{eq:2.} become,
+Then the components of the 4-tuple \ref{eq:2} become,
 \begin{align*}
-	L &  \text{ is the } d \text{-dimensional lattice} \\
-	S &  \text{ is the set of possible states} \\
-	N &  \text{ is the neighbourhood} \\
-	f &  \text{ is the local update rule}
+	L &  \text{ remains the same } \\
+	S &  \text{ remains the same} \\
+	N &  \text{ becomes the kernel, } \ \omega \\
+	f &  \text{ becomes the activation function,} \ \sigma
 \end{align*} 
 It turns out that CNN's can learn the rules of arbitrary CA's \cite{PhysRevE.100.032402}, for example game of life, and it doesn't need a particularly deep architecture to do so. it does this by essentially learning the kernel / filter weights that needs to be applied. To use a CNN as a CA, you essentially turn the CA into a binary classification problem to predict the state of each cell.
 
-\subsection{Neural Cellular Automata}
+\section{Neural Cellular Automata}
 
-Now that we have some basic foundational knowledge we can move on to the real NCA (or differentiable, self-organizing systems). As discussed in the section above, a CNN can be seen as a type of CA, but utilizing a continuous state-space instead of a discrete one (as well as an arbitrary number of hidden states / channels). As described in the growing NCA paper \citetitle{growing_nca}, this model can be thought of as a “Recurrent Residual Convolutional Network with ‘per-pixel’ Dropout”. The 'per-pixel dropout' refers to the stochastic updating of cells. We start from a single black pixel in the center of a blank image and run the model on it for a certain number of steps where the output of the model becomes the new input. Then compare the final result of this model with the target image we are training the model. We then perform a per-pixel difference loss function (L2 loss). Then based on this loss we use ADAM optimizer to back-propagate through time to adjust the weights of the model until the model learns to 'grow' the target image from a seed state.a seed state.
+This section attempts to summarize the paper, \citetitle{growing_nca} by \citeauthor{growing_nca} \cite{growing_nca}
+\subsection{Brief Background}
+
+The motivation for this NCA, like the MLP and CNN, is biologically motivated. In this case, cell morphology was the topic of interest. How do cells, using local information like the cells around them and chemical gradients 'know' what type of organ or tissue to become? This incredible ability of living systems is known as self-organization. goal of \citeauthor{growing_nca} was to determine cell-level rules which simulate the behaviour of these biological systems. Like creating complex shapes  starting from a single cell, maintaining that shape and regenerating damaged parts of the system.
+
+
+\subsection{The Model}
+Now that we have some basic foundational knowledge about CA and CNN's, we can move on to the real NCA (or differentiable, self-organizing systems). As discussed in section \ref{ca-cnn}, a CNN can be seen as a type of CA, but utilizing a continuous state-space instead of a discrete one. We can also increase the amount of channels each cell has to an arbitrary number. In the paper, they found 12 hidden states to be a good number. As can be seen in (fig \ref{fig:nca}), this model can be thought of as a “Recurrent Residual Convolutional Network with ‘per-pixel’ Dropout”. The 'per-pixel dropout' refers to the stochastic updating of cells. We start from a single black pixel in the center of a blank image and run the model on it for a certain number of steps where the output of the model becomes the new input (i.e. recurrent).
+\begin{figure}[h]
+	\includegraphics[width=1\textwidth]{../Figures/growing_nca.png}
+	\centering
+	\caption[NCA]{What a single step of the nca model looks like. This image is taken directly from the \citetitle{growing_nca} paper \cite{growing_nca}} 
+	\label{fig:nca}
+	\url{https://distill.pub/2020/growing-ca/}
+\end{figure}
+
+\subsection{Training} \footnote{The paper outlines multiple experiments. Only the initial experiment titled "Experiment 1: Learning to Grow " will be covered.}
+We start from a single black pixel, iterate the model over $x$ time steps, then compare the final result of this model with the target image we are training the model. We then perform a per-pixel difference or MSE (equation \ref{eq:2.2} Then based on this loss we use ADAM optimizer to back-propagate through time to adjust the weights of the model until the model learns to grow or morph into the target image. An image can be seen in Appendix \ref{AppendixA} (\ref{fig:appendix-nca})
+
