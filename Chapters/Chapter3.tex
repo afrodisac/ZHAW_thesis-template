@@ -8,96 +8,44 @@
 \label{Chapter3} % For referencing the chapter elsewhere, use \ref{Chapter1}
 \section{Classical Approaches}
 
-\subsection{1D}
-	A 1D flood model represents the river network by connecting cross-sections taken through the river and the land and simulating the water level as it flows through the model. It gives us a precise definition of the riverbed. The drawback to this model is it gives us limited information about the flow dynamics and the general topography of the river and flood plain \cite{Flood}.
-\subsection{2D}
-	 A 2D flood model represents the river network in a mesh, which provides information about the river topography and allows to define very precisely the topography of the floodplain. A drawback to this type of model is the computational time required. It is very slow is not feasible to be used over large areas. 2D models are also often linked to a 1D model of the channel between the riverbanks \cite{Flood}.
-	 
-	In a study by \cite{Gharbi}, A comparison of 1D and 2D models was made regarding Flood simulation on the Medjerda Riverin Tunisia. They found very similar information. 1D models they used (HEC RAS and MIKE 11 models) were much faster and less computationally intensive than the 2D counterpart (TELEMAC). However, the overall results were much better in the 2D model. They also found overall that the results from the 1D models and 2D models were in good agreement but was quite dependent on the accuracy of the data available to them.
+There are many different approaches to tackle flood modeling. They include Rapid flood spreading, 1D surface, 1D sewer, 1D-1D coupled, 2D surface and 1D-2D coupled \cite{bulti2020review}. The objectives of this thesis are to model the dynamics and inundation of a flood plain in 2D. Therefore only 2D modeling techniques will be mentioned.
+
+\subsection*{Rapid Flood Spreading} 
+
+Rapid Flood Spreading (RFS)\footnote{The RFS method description has been summarized from \citeauthor{liu2010new} \cite{liu2010new}}, as the name implies, is a simple model to rapidly predict inundation of the flood plain. It works by equalizing the water levels of cells within a local neighbourhood. There are two stages to this process: The pre-calculation and inundation routine. In the pre-calculation routine, low points are identified in the DEM and expanded outwards. In the inundation routine, water is distributed from the inflow source to neighbouring cells using a lowest neighbour principle.
+
 	
-\subsection{The Problem With Classical Approaches}
-Although classical approaches are accurate, they are extremely computationally expensive. Solving partial differential equations is quite taxing and is limited to smaller areas at lower resolution. 
+\subsection*{Two-Dimensional Surface}
+A 2D flood model represents the river network in a mesh, which provides information about the river topography and allows to define very precisely the topography of the floodplain. The hydraulics are solved using two-dimensional shallow  water equations: The continuity equation (Eq. \ref{eq:3.1}), and two-dimensional equations of motion (Eq. \ref{eq:3.2} and Eq. \ref{eq:3.3}) \cite{o1993two}.
 
-\section{CA Approach}
-The purpose of this review is to see how cellular automata are being implemented for flood modeling. There are a few problems with conventional flood modeling techniques. 1D models give us limited information about flow dynamics and 2D models are extremely computationally taxing, which limits their use. Cellular automata (CA) could be implemented to remedy this problem by reducing the computational time and cost to run these models. The focus of this review will be primarily on the CA created by \cite{Ghimire} as the paper is very well laid-out and the CA used is well defined, albeit, complex. This CA uses regular grid cells as a discrete space for the CA setup and applies generic rules to local neighbourhood cells to simulate the progression of pluvial floods.
-
-
-\section*{CA Formulation by Ghimire, et al}
-
-This model consists of five essential features of a true cellular automation: discrete space; neighbourhood (NH); cell state; discrete time step; transition rule.
-The square grid digital elevation model (DEM) provides the discrete space for the CA set up. A DEM is just a representation of the bare ground (bare earth) topographic surface of the Earth which excludes trees, buildings, and any other surface objects \cite{DEM}. The NH used for this model consists of the central cell itself and its four cardinal adjacent cells (five cells in total). This is known as the von Neumann type NH. The Moore NH, consisting of eight surrounding cells and the central cell similar to the NH in John Conway’s Game of Life, is an alternative. 
-Precipitation occurs over the whole area of the terrain being considered. Movement of the water is mainly driven by the slopes between cells and limited by the transferrable volume and the hydraulic equations. The transferrable volume is the minimum of the total volume within the giving cell and the space available in the receiving cells. The transferrable volume is the minimum of the total volume within the giving cell and the space available in the receiving cells. Manning’s equation and the critical flow equation are applied to restrict the flow velocity. The assumption here is that water can only flow from one cell to its local NH, according to the hydraulic gradients in one computing time step. 
-In the calculation the NH cells are ranked according to the water level, as 1 for the cell with the lowest level and 5 for the highest one, to determine the direction of flow between cells. Only the outflow fluxes (Flux as flow rate per unit area) from the central cell to its neighbours with lower ranks are calculated. Any inflow to the cells under consideration is eventually calculated as the outflow from its neighbor that has a higher water level on the opposite of the cell interface.
-The fluxes through the interfaces of the central cell are determined by the states of NH cells in previous time steps and stored as intermediate buffers for updating the states of cells. The states of flood depths of all cells are updated simultaneously when all interface fluxes are determined.
-
-\subsection*{Main Algorithm:}
-Program start
-\begin{enumerate}
-	\item Initialize variables –depth, water surface elevation, input(terrain, rainfall)
-	\item Start time loop\{
-	\item Add precipitation depth directly to the water depth on the cells
-	\item Computation starts in the local NH \{
-	\begin{enumerate}
-		\item Ascending cell rankings based on the water surface elevations
-		\item Layer-wise claculation of outflows from central cell
-		\item Distribution of layer-wise fluxes within the NH
-		\item Calculate the cell interfacial velocities
-	\end{enumerate}
-	\item End of local NH loop \}
-	\item Determine time step $\Delta$t required for the distriibutions appiled
-	\item Update simulation time: t = t + $\Delta$t
-	\item Update the states (depths, water surface elevation) for the new time step
-	\item Apply boundary conditions to suit the flow conditions
-	\item Data outputs for visualization and analysis
-	\item Repeat until the end of simulation time
-	\item End of time loop \}
-\end{enumerate}
-Program end
-
-\subsection*{Outflow Flux Calculation}
-The calculation process starts with cell ranking, based on the water surface elevation in the local NH with five discrete states of cell ranks \{r=1, 2, 3, 4, 5\}. This is the height of each cell. Space between the water levels (water levels added on top of the height) of the cells are divided into four layers. Li ¬ is the free space between the water levels of cells ranked i and i + 1 that can accommodate the water volume from cells with higher ranks. If the rank of the central cell is r¬c (e.g. rank 3) there can be at most rc -1 number of cells receiving water as flux (because the central cell obviously can’t receive water from itself) through the NH cell boundaries, if enough water is available in the central cell. Outflow volume to the layer i can be given by the following formula that is applied locally for each cell considered: 
-\begin{equation} \label{eq:1}
-	\Large\Delta{V}_{i} = \text{min}\Big\{V_{c} - \sum_{k=1}^{i-1} \Delta{V}_{k}, \Delta{WL}_{i}\sum_{k=1}^{i}A_{k}\Big\}
-\end{equation}
-Where $V_{c}$ is the water volume of the central cell in the previous time step; $\Delta$ $V_{k}$ is the volume distributed to layer $k$, $\sum_{k=1}^{i-1}$$\Delta{V}_{k}$ total volume has has been distributed to layers 1 to i-1; $V_{c}$ - $\sum_{k=1}^{i-1}$$\Delta{V}_{k}$ represents the remaining volume available for distributing to layer i  after filling i-1 layers. $\Delta{WL}_{i}$ is the water level difference between cells ranked i and i+1;  $\sum_{k=1}^{i}$$\Delta{A}_{k}$ is the total surface area of layer i; $\Delta{WL}_{i}$  $\sum_{k=1}^{i}$$\Delta{A}_{k}$ is the available space for storage in layer i. For the layer adjacent to the central cell, an additional term
-\begin{displaymath}
-	\Large \sum_{k=1}^{i} A_{k}/A_{c} + \sum_{k=1}^{i} A_{k}\Big(V_{c} - \sum_{k=1}^{i-1} \Delta{V}_{k} \Big)
-\end{displaymath}
-is applied to limit $\Delta{V_{i}}$, which assumes that the water levels for all cells will reach an equivalent level. Thus, a cell with rank r receives water only from cells with higher ranks and the water received is added on top of its own water level. Thus, the total outflow flux from the central cell to a neighbouring cell ranked i is calculated as:
-\begin{equation} \label{eq:2}
-	\Large F_{i} = \sum_{k=i}^{r_{c} - 1}\frac{\Delta{V_{k}}}{k}
-\end{equation}
-For a regular grid, the areas of the central cell, $A_{c}$ and the neighboring cells, $A_{k}$ are constant over the domain. However, the methodology is applicable to different grid settings. Therefore, a cell containing buildings that do not allow water to flow in can be described using a variable cell area to reflect the reduced space occupied by buildings.
-
-\subsection*{Depth updating}
-A very important step in the CA approach is the execution of the state transition rule. In the resent CA calculations, the global continuous state is the flow depth in a grid cell, which is updated for every new time step. This is done by algebraically summing the water depth from all its four neighbours. The following transition rule is used to update the flow depth:
-
-\begin{equation} \label{eq:3}
-	\Large d^{t+\Delta{t}} = d^{t} + \theta \frac{\sum F}{A}
-\end{equation}
-Where $\theta$ is a non-dimensional flow relaxation parameter that can take values between 0 and 1, F is the total volume transferred to the cell under consideration as calculated from Equation $\ref{eq:2}$ and A is the cell area. The purpose of the relaxation parameter is to damp oscillations that would appear otherwise. The effect of the relaxation parameter does not impart any effect on mass conservation rather it makes the flow smooth and gradual. The values of $\theta$ are determined by numerical experiments and calibration.
-
-\subsection*{Time-Step Calculation}
-
-For most 2D hydraulic modelling, higher resolution DEM data are being used, the required time steps will be shorter to ensure the stability of model computations, which often leads to large computational burden, such that many studies have been focused on reducing the computational time of simulations. The time increment, determined as the largest that satisfies the stability criteria anywhere in the whole domain, implies that for most of the cells only a fraction of the locally allowable time steps is used to integrate the solution in time. This represents a waste of computational effort and limits the use of the method. A spatially varying time step can increase solution accuracy and reduce computer run time. In this implementation we use maximum permissible velocity which ensures the minimum time steps required to distribute the applied flux. The interfacial velocity v* is determined based on the flux transferred through a cell boundary given by:
-
-\begin{equation} \label {eq:4}
-	\Large v^{*} = \frac{F}{d^{*}\Delta{x}\Delta{t}}
-\end{equation}
-Where, $ d*$ is the water depth of flow available at the interface, which is the difference between higher water level and higher ground elevation of the central cell and its neighbour cell to the interface
-
-\begin{equation} \label{eq:5}
-	\Large d* = \text{max} \{WL_{C}, WL_{N}\} - \text{max}\{z_{C}, z_{N}\}
+\begin{equation}
+	\label{eq:3.1}
+	\frac{\partial h}{\partial t} + \frac{\partial h V_{x}}{\partial x} + \frac{\partial h V_{y}}{\partial y} = 0
 \end{equation}
 
-Where, $WL$ and $z$ are the water levels and ground elevation respectively and the subscripts $C$ and $N$ represent central and neighbouring cells repectively
-To prevent the velocity from over shooting, a cap on the localallowable velocity is applied as given by Equation \ref{eq:6} based on the Manning's formula and critical flow condition as:
-\begin{equation} \label{eq:6}
-	\Large v = \text{min}\{\frac{1}{n}R^{\frac{2}{3}}S^{\frac{1}{2}}, \sqrt{gd}\}
+\begin{equation}
+	\label{eq:3.2}
+	S_{fx} = S_{ox} - \frac{\partial h}{\partial x} - \frac{V_{x}}{g}\frac{\partial V_{x}}{\partial x} - \frac{V_{y}}{g}\frac{\partial V_{x}}{\partial y} - \frac{1}{g}\frac{\partial V_{x}}{\partial t} 
 \end{equation}
-where, the hydraulic radius R is taken to be equal to the water depth $d$ and $S$ is the slope of water surface elevation and is always positive for outflow calculation. If $v$ is less than $v*$, the interfacial flux $F$ is recalculated by replacing $v*$ with $v$ in Equation \ref{eq:4}
-The global time step is then calculated based on the global maximum velocity to satisfy the conventional CFL criteria. Therefore, each time the state transition rule is applied, the global time step is updated using maximum velocity calculated from all cell interfaces, as given by:
-\begin{equation} \label{eq:7}
-	\Large \Delta{t} = \frac{\Delta{x}}{\text{max}\{v_{j}\}}
+
+\begin{equation}
+	\label{eq:3.3}
+	S_{fy} = S_{oy} - \frac{\partial h}{\partial y} - \frac{V_{y}}{g}\frac{\partial V_{y}}{\partial y} - \frac{V_{x}}{g}\frac{\partial V_{y}}{\partial x} - \frac{1}{g}\frac{\partial V_{x}}{\partial t} 
 \end{equation}
-Where $v_{j}$ is the velocity calculated for the jth cell interface for the entire domain.
+% change the rest of the math 'where' to the following format:
+Where, $h$ is flow depth; $g$ is gravitational acceleration; $V_{x}$ and $V_{y}$ are the depth-averaged  velocity components along the $x$ and $y$ coordinates; The friction slope components $S_{fx}$ and $S_{fy}$ are a function of the bed slope $S_{ox}$ and $S_{oy}$, pressure gradient, convective and local acceleration terms. However, the diffusive wave approximation to this equation is defined by neglecting the latter three terms. \\
+2D surface models have the advantage of being able to model dynamics of the flood plain, duration and are very accurate.
+ 
+\subsection*{The Problem With Classical Approaches}
+RFS is an extremely fast modeling scheme but comes with some major drawbacks. The can only show the final state of inundation and does not describe information about the flood. 2D surface models require fine resolution data and extremely computationally demanding. They can take hours to run and are only able to model small areas. Both of these methods have rather large drawbacks. Especially when unpredictable rainfall events occur and rapid modeling of a flood plain is required to prevent catastrophe.
+
+\section{The CA Approach}
+The advantage of employing CA for flood modeling is its simplicity \cite{Wolfram2002} and computational speed. It has the advantage of utilizing local functions for computation. Older 2D CA models, although much faster than solving complete shallow water equations still had to solve complicated, computationally demanding equations.
+\subsection{The Weighted Cellular Automata Model}
+The following is an overview of the paper titled \citetitle{guidolin2016weighted}  by \citeauthor{guidolin2016weighted} \footnote{\cite{guidolin2016weighted}}. This work is an improvement on the previous CA2D model (A short literature review can be found in Appendix \ref{AppendixC}). This thesis utilized data simulated by the weighted Cellular Automata 2D (WCA2D) for training and validation of deep learning models.\\
+
+\citeauthor{Ghimire}'s paper improved on previous CADDIES-2D model in that instead of solving Manning equation for the computation of interfacial discharges between cells 
+
+
+
+
