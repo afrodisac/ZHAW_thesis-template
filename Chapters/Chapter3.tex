@@ -40,12 +40,29 @@ Where, $h$ is flow depth; $g$ is gravitational acceleration; $V_{x}$ and $V_{y}$
 RFS is an extremely fast modeling scheme but comes with some major drawbacks. The can only show the final state of inundation and does not describe information about the flood. 2D surface models require fine resolution data and extremely computationally demanding. They can take hours to run and are only able to model small areas. Both of these methods have rather large drawbacks. Especially when unpredictable rainfall events occur and rapid modeling of a flood plain is required to prevent catastrophe.
 
 \section{The CA Approach}
-The advantage of employing CA for flood modeling is its simplicity \cite{Wolfram2002} and computational speed. It has the advantage of utilizing local functions for computation. Older 2D CA models, although much faster than solving complete shallow water equations still had to solve complicated, computationally demanding equations.
-\subsection{The Weighted Cellular Automata Model}
-The following is an overview of the paper titled \citetitle{guidolin2016weighted}  by \citeauthor{guidolin2016weighted} \footnote{\cite{guidolin2016weighted}}. This work is an improvement on the previous CA2D model (A short literature review can be found in Appendix \ref{AppendixC}). This thesis utilized data simulated by the weighted Cellular Automata 2D (WCA2D) for training and validation of deep learning models.\\
+\label(WCA2D)
+The advantage of employing CA for flood modeling is its simplicity \cite{Wolfram2002} and computational speed. It has the advantage of utilizing local functions for computation. Older 2D CA models, although much faster than solving complete shallow water equations still had to solve complicated, computationally demanding equations like Manning's equation (Eq. \ref{eq:manning}).
 
-\citeauthor{Ghimire}'s paper improved on previous CADDIES-2D model in that instead of solving Manning equation for the computation of interfacial discharges between cells 
+\subsection*{The Weighted Cellular Automata}
+The following is an overview of the paper titled \citetitle{guidolin2016weighted}  by \citeauthor{guidolin2016weighted} \footnote{For a detailed description on the mathematics utilized for this model I refer readers to the original paper \cite{guidolin2016weighted}}. This work is an improvement on the previous CA2D model (A short literature review can be found in Appendix \ref{AppendixC}). This thesis utilized data simulated by the weighted Cellular Automata 2D (WCA2D) for training and validation of deep learning models.\\
 
+\citeauthor{Ghimire}'s paper improved on previous CADDIES-2D model in that instead of directly solving Manning's equation for the computation of interfacial discharges between cells (Eq. \ref{eq:discharge}), a ranking system is used and equation \ref{eq:6} is used. This approach still has issues in that the ranking system equation was still solved for every time step, for each direction to limit the flow velocity. And if the computed velocity was too high, it re-calculated it. This resulted in increased computational time.
+\begin{equation}
+	\label{eq:manning}
+	V = \frac{1}{n} {R}^{2/3}S^{1/2}
+\end{equation}
+Where $V$ is the cross-sectional average velocity (m/s); $R$ is the hydraulic radius (m); $S$ is hydraulic gradient. To calculate discharge (or volumetric flow rate), $Q = AV$ is used to rewrite Manning's equation to,
+\begin{equation}
+	\label{eq:discharge}
+	Q = A \frac{1}{n} {R}^{2/3}S^{1/2}
+\end{equation}
 
+WCA2D is based on the model by \citeauthor{Ghimire} but substitutes the ranking system with a weighted based system that simplifies the transition rules. This transition rule has four steps:
+\begin{enumerate}
+	\item Identify the downstream neighbour cells
+	\item Compute the specific weight of each downstream cell based on the available storage volume
+	\item Compute the total amount of volume that will leave the central cell
+	\item for each downstream cell, set the eventual intercellular-volume which depends on the previously computed weight and total amount of volume transferred.
+\end{enumerate}
 
-
+Overall the WCA2D model improves performance on the CA2D model but sacrifices some accuracy.
