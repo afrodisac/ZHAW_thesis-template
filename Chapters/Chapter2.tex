@@ -20,7 +20,14 @@ CA are some of the simplest computational models that exist. They consist of a d
 To help build intuition about CA and its associated notation, I will discuss John Conway's Game Of Life (GOL). GOL will be mentioned a lot in this thesis because it is a simple example and widely known CA.
 
 \subsection{Mathematical Description of CA}
+\subsubsection*{Definition}
 
+An arbitrary CA is typically represented as a 4-tuple, with time, $T$, omitted:
+\begin{equation} \label{eq:2.1}
+	A = (L, S, N, f)
+\end{equation}
+
+Where $A$ is the CA; $L$ is the $d$-dimensional lattice; $S$ is the set of possible states; $N \subset L$ is the neighbourhood; $f$ is the local update rule with $f: S^{N}\rightarrow S$. 
 \subsubsection*{Defining Game Of Life}
 The following are the general rules written in natural language and in the subsequent section we will demonstrate the notation used for such as system.
 
@@ -39,24 +46,8 @@ The following are the general rules written in natural language and in the subse
 
 By applying these rules iteratively, the Game of Life evolves and creates various patterns, including static configurations, oscillators, and spaceships that move across the grid. The simplicity of the rules gives rise to complex and intriguing dynamics within the cellular automaton known as the Game of Life.
 
-\subsubsection*{Representing GOL Mathematically}
 
- An arbitrary CA is typically represented as a 4-tuple, with time, $T$, left out:
-\begin{equation} \label{eq:2.1}
-	A = (L, S, N, f)
-\end{equation}
 
-where:
-
-\begin{align*}
-	A 	&  \text{ is the CA} \\
-	L 	&  \text{ is the } d \text{-dimensional lattice} \\
-	S 	&  \text{ is the set of possible states} \\
-	N 	&  \text{ is the neighbourhood} \\
-	f 	&  \text{ is the local update rule}
-\end{align*}
-
-\textbf{need to add the math here}
 \subsection{Why are they useful?}
 In the above section, although beautiful and impressive, the examples are not practival. But the same motivation and methods can be extrapolated to model physical or biological systems. Especially many differentiable equations that can be descritized in time and space can be modeled using CA. Many examples have been demonstrated over the years. In the following chapter \ref{Chapter3}, the CADDIE2D model is discussed in detail. But other examples include: particle simulation, chemical reactions, fire modeling, human and animal dynamics to name a few. [must find references for this.]
 
@@ -102,19 +93,15 @@ The first is Mean Squared Error (MSE),
 	\label{eq:2.2}
 	MSE = \frac{1}{n}\sum_{i=1}^{n}\left(y_{i} - \hat{y}_{i}\right)^{2}
 \end{equation}
-
-where,
-\begin{align*}
-	n &  \text{ is the number of samples} \\
-	y_{i} &  \text{ is the target value }\\
-	\hat{y}_{i} &  \text{ predicted value} \\
-\end{align*}
-
 The second is Mean Absolute Error (MAE),
 \begin{equation}
 	\label{eq:2.3}
 	MAE = \frac{\sum_{i=1}^{n}\left|y_{i} - \hat{y}_{i}\right|}{n}
 \end{equation}
+
+Where $n$ is the number of samples; $y_{i}$ is the target value; $\hat{y}_{i}$ is the predicted value.
+
+
 
 It is important to note that a loss function must be differentiable. The way neural networks are able to learn such complicated non-linear functions is because of the backpropagation algorithm. An optimizer algorithm like gradient descent (although many more exist) is used to minimize this loss function by driving it towards zero. It does this by calculating the optimizer with respect to the weight values for various inputs.
 
@@ -130,14 +117,8 @@ A convolution is defined as: \\
 \begin{equation*}
 	g(x,y) = \omega f(x, y)
 \end{equation*}
-Where:
-\begin{align*}
-	f &: \text{is the function to be convolved} \\
-	\omega &: \text{is the kernel}  \\
-	g &: \text{is the convolution} 
-\end{align*} 
+Where $f$ is the function to be convolved; $\omega$ is the kernel or filter; $g$ is the resulting convolution. For GOL we define the kernel as
 
-For GOL we define the kernel as,
 \begin{gather*}
 	\omega = 
 	\begin{bmatrix}
@@ -150,21 +131,18 @@ For GOL we define the kernel as,
 
 And then add an activation function, $\sigma$: \\ \\
 
-$
-\sigma(x, y) = \begin{cases}
-	1, & \text{if } g(x, y) \in \{3, 11, 12\} \\
-	0, & \text{else}
-\end{cases}
-$
-\\ \\
+\begin{equation}
+	\sigma(x, y) = \begin{cases}
+		1, & \text{if } g(x, y) \in \{3, 11, 12\} \\
+		0, & \text{else}
+	\end{cases}
+\end{equation}
 
-Then the components of the 4-tuple \ref{eq:2} become,
-\begin{align*}
-	L &  \text{ remains the same } \\
-	S &  \text{ remains the same} \\
-	N &  \text{ becomes the kernel, } \ \omega \\
-	f &  \text{ becomes the activation function,} \ \sigma
-\end{align*} 
+Then the components of the 4-tuple \ref{eq:2} becomes,
+\begin{equation}
+	\label{eq:2.4}
+	A_{GOL} = (L, S, \ \omega , \ \sigma )
+\end{equation}
 It turns out that CNN's can learn the rules of arbitrary CA's \cite{PhysRevE.100.032402}, for example game of life, and it doesn't need a particularly deep architecture to do so. it does this by essentially learning the kernel / filter weights that needs to be applied. To use a CNN as a CA, you essentially turn the CA into a binary classification problem to predict the state of each cell.
 
 \section{Neural Cellular Automata}
