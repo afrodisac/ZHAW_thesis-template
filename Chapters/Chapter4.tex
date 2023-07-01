@@ -8,23 +8,71 @@
 \label{Chapter4} % For referencing the chapter elsewhere, use \ref{Chapter1}
 
 \section{Data}
-Some General notes about the data:
 
-In order to train the NCA, simulated flood data was used over a catchment area with homogenious rainfall and constant roughness coefficient. The simulated data is proven to be quite accurate and maintains mass and energy conservation. Due to a lack of compute, randomly selected subsections of the data was used and each timestep (10 or 1 minute intervals of simulation time) were used as targets for the L2 loss function.
+The data was provided by [Eawag, institute of Aquatic Sciences]. It was generated using CADDIE2D software, which is described in Chapter \ref{Chapter3}. In the dataset, we look at four catchment areas around Switzerland, '26', '292', '709', '819' (see Fig \ref{fig:4.1}). They are named according to a DEM naming scheme all DEM's have a spatial resolution of 1. For each DEM, there are fourteen rainfall events (see \ref{fig:4.2}), for each rainfall event, there is a water depth  map for each time step (see Fig {fig:4.3}, which shows spatial evolution over time), rainfall event names, a mask to remove areas  outside the catchment area (if water were to propagate to this boundary, it would be considered run-off). Each time step represents 10 minutes of real time dynamics, but computational time of the CADDIES model varies.
 
-The model works by adding the specific rainfall event directly into the water depth cell. The second channel is the DEM (digital elevation map) which is immutable in this case and the rest of the channels (25 total) are hidden channels that are not calculated in the loss function. Just like in the Growing Neural CA paper, the model is free to do what it will with these channels and only the water depth (and later hopefully velocity) will be adjusted over each iteration.
+\begin{figure}[htbp]
+	\includegraphics[width=0.6\textwidth]{../Figures/Catchment_dems.png}
+	\centering
+	\caption[FourDems]{Elevation map for the four catchment areas of interest. Color indicates height in m; height of 0 m is outside of the catchment area} 
+	\label{fig:4.1}
+\end{figure}
 
-The problem I faced when slicing is there could be higher elevations with a water depth outside of this area, so when you look at the target, more water might be seen than there should be. to remidy this, I decided to use no padding and instead make the square 1 pixel in each direction larger for the input and the target is smaller. This hopefully will remedy this issue. <- this didn't work at all and I'm not entirely sure how to solve this problem now. because there is no 'run off' in the middle of the catchment area...
+\begin{figure}[htbp]
+	\includegraphics[width=0.6\textwidth]{../Figures/rainfall_train.png}
+	\centering
+	\caption[rainfall events]{Rainfall events over time for each DEM} 
+	\label{fig:4.2}
+\end{figure}
 
-\subsection{Data Acquisition}
-The data was provided by [Eaweg, institute of Aquatic Sciences]. It was generated using CADDIE2D software, which is discribed in detail in \ref{Chapter3}. Multiple catchment areas are part of this data. Work was done on two seperate sets of data.
+\begin{figure}[htbp]
+	\includegraphics[width=0.6\textwidth]{../Figures/spatial_evoltution_waterdepth.png}
+	\centering
+	\caption[wd spatial evolution]{Spatial evolution of water depths for catchment 292. Colour indicates waterdepth (in m)} 
+	\label{fig:4.3}
+\end{figure}
+
 
 \subsection{Data Preprocessing}
-The data acquired is not in the correct form to be fed into the model for training. The size of the matrix is too large to fit into the local machine used in this thesis. Thefore submatrix's were created by randomly indexing into the feature map of size (50x50).
+Due to computational limitations, data used during training are sub-sampled to have spatial dimensions 120 x 120, while the data used for testing has spatial dimensions 400 x 400 The rainfall events, titled "rainfall \_ events \_ 0 - 13", are used for training and validation data (using the train \_ test \_ split function from the sklearn library) in a ratio of 0.8 and 0.2 respectively. The last  rainfall  event "rainfall \_ events \_ 14" is unseen and used for the test set (see Fig \ref{fig:4.4}). \\
+Many datasets were created but what has been mentioned above is consistent for all of them.
 
-\subsection{Features}
-The dataset contains the WaterDepth (in m), the DEM (digital elevation map - goes into abbreviations). Timesteps, (in seconds) and rainfall events (in mm/hour).
-\subsubsection{validation and test set}
+\begin{figure}[htbp]
+	\includegraphics[width=0.6\textwidth]{../Figures/test_rainfall_events.png}
+	\centering
+	\caption[Rainfall Test]{Rainfall events used for testing} 
+	\label{fig:4.4}
+\end{figure}
+
+\subsubsection*{Initial Screen}
+Three datasets were created for each DEM. All datasets use the same features:
+\begin{enumerate}
+	\item Water depth (meters)
+	\item Rainfall (mm/hr)
+	\item DEM
+\end{enumerate}
+
+The first dataset uses the raw features generated by the CADDIES model. The second dataset uses Min Max normalization but across all features by normalizing via the DEM (see Eq. \ref{eq:4.1}). The third uses classical min max normalization (see Eq. \ref{eq:4.2}) for the DEM feature, rainfall is interpolated over time (see Eq \ref{eq:4.3})
+
+\begin{equation}
+	\label{eq:4.1}
+	X_{norm} = \frac{X-A_{min}}{A_{max}-A_{min}}
+\end{equation}
+
+\begin{equation}
+	\label{eq:4.2}
+	X_{norm} = \frac{X-X_{min}}{X_{max}-X_{min}}
+\end{equation}
+Where $X$ is the feature to be normalized, $A$ is the whole dataset.
+\begin{equation}
+	\label{eq:4.3}
+	r_{interpolated} = \frac{\frac{r}{1000}}{60} \times 10
+\end{equation}
+Where $r$ is rainfall in mm/hr. The interpolated rainfall is in m/ 10 minutes.
+
+\subsubsection*{Initial Screen}
+
+
 
 \section{Model creation}
 \subsection{Classical CNN}
@@ -48,9 +96,9 @@ I make sure to not increment the DEM feature. I add alive masking (cell with \te
 
 The output of this model  becomes the new input, like a residual block.
 
+\subsection{Loss}
 
-
-\section{Custom Loss Function}
+\section{Evaluation}
 \subsection{Custom L2 loss}
 Due to the nature of the data (extremely small values), the loss starts off extrememly small (example of loss here based on real values). The model also really liked to predict 0 and try to just predict the last timestep. so we create a loss function to weight the 0's according to how many 0s appear in the data. We also try to mask it so that the model cannot predict less than 0 (constraint model)
 \section{Proposed Evaluation}

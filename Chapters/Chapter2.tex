@@ -164,5 +164,5 @@ Now that we have some basic foundational knowledge about CA and CNN's, we can mo
 \end{figure}
 
 \subsection{Training} \footnote{The paper outlines multiple experiments. Only the initial experiment titled "Experiment 1: Learning to Grow " will be covered.}
-We start from a single black pixel, iterate the model over $x$ time steps, then compare the final result of this model with the target image we are training the model. We then perform a per-pixel difference or MSE (equation \ref{eq:2.2} Then based on this loss we use ADAM optimizer to back-propagate through time to adjust the weights of the model until the model learns to grow or morph into the target image. An image can be seen in Appendix \ref{AppendixB} (\ref{fig:appendix-nca})
+We start from a single black pixel, iterate the model over $x$ time steps, then compare the final result of this model with the target image we are training the model. We then perform a per-pixel difference or MSE (equation \ref{eq:2.2}) Then based on this loss we use ADAM optimizer to back-propagate through time to adjust the weights of the model until the model learns to grow or morph into the target image. An image can be seen in Appendix \ref{AppendixB} (\ref{fig:appendix-nca})
 
