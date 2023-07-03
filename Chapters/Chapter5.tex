@@ -7,7 +7,29 @@
 \chapter{Results} % Main chapter title
 \label{Chapter5} % For referencing the chapter elsewhere, use \ref{Chapter1}
 
-\section{NCA}
-\section{simple CNN}
-\section{depthwise layer}
-\section{performance of models on the different datasets}
+\section{Initial Dataset Screening}
+\subsubsection*{DEM Screening}
+The Initial dataset screen was done in order to evaluate the best DEM and normalization strategy. The findings are presented here,
+
+
+\subsubsection*{Loss Functions}
+\begin{table}[h]
+	\centering
+	\caption{Final Results For Loss Functions Across DEM 292}
+	\label{tab:sample}
+	\begin{tabular}{p{3cm}ccccc}
+		\toprule
+		Name &  H &  BM1 &  BM2 &  Model &  Recurrent \\
+		\midrule
+		MSE &       0.000787 &        0.000914 &        0.002026 &   0.002225 &            0.028407 \\
+		MAE &       0.000787 &        0.001607 &        0.003056 &   0.000893 &            0.004070 \\
+		MSE AUTO &       0.000787 &        0.001145 &        0.019667 &   0.001983 &           34.082030 \\
+		MAE AUTO &       0.000787 &        0.001093 &        0.001836 &   0.000866 &            0.003725 \\
+		MSE MAN &       0.000787 &        0.001633 &        0.001352 &   0.000740 &            0.002307 \\
+		MAE MAN &       0.000787 &        0.000994 &        0.008186 &   0.000665 &            0.001413 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+Where AUTO and MAN refer to the different regularization done on MSE and MAE. H is the Heuristic, BM1 and BM2 are the benchmark models, Model is the model used during initial screening, Recurrent refers to the recurrent predictions on the test dataset.
+
+\section{title}
