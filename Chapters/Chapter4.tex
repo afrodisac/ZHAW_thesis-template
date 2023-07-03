@@ -45,6 +45,7 @@ Many datasets were created but what has been mentioned above is consistent for a
 \end{figure}
 
 \subsubsection*{Initial Screening}
+\label{methods:inital-screening}
 Three datasets were created for each DEM. All datasets use the same features:
 \begin{enumerate}
 	\item Water depth (meters)
@@ -92,6 +93,7 @@ Two additional datasets were created for evaluation. The first Adds the DEM mask
 \section{Models}
 
 \subsubsection*{Initial Screening}
+\label{DepthwiseCNN:init}
 From previous evaluation, A simple depth-wise CNN seemed to work well.  So the following model (see \ref{lst:1}) was used for evaluation on the initial screening dataset:
 
 \begin{lstlisting}[language=Python, label={lst:1}]
@@ -253,6 +255,7 @@ class IncepInspired(tf.keras.Model):
 
 \section{Training}
 \subsubsection*{Loss Functions}
+\label{training:loss}
 MSE (see Eq. \ref{eq:2.2}) and MAE (see Eq. \ref{eq:2.3}) were evaluated as well as two variations of regularization (see Eq. \ref{eq:4.5} and Eq. \ref{eq:4.6}) for each for a total of six loss functions.
 \begin{equation}
 	\label{eq:4.5}
@@ -360,7 +363,7 @@ The second benchmark model is a simple CNN but characterized by 1x1 convolutions
 				return dx
 \end{lstlisting}
 
-And finally a simple heuristic is used for a complete comparison. The heuristic is predicting the previous time step with no change (see Eq. \ref{eq:4.7}) \footnote{The roll function from the numpy module in python was used as the heuristic. An oversight occured and instead of evaluating on no change (the original idea), the heuristic instead predicts the previous time step. What was meant to be evaluated was $X_{w}^{t+1} = X_{w}^{t}$}.
+And finally a simple heuristic is used for a complete comparison. The heuristic is predicting the previous time step with no change (see Eq. \ref{eq:4.7}) \footnote{The roll function from the numpy module in python was used as the heuristic. An oversight occured and instead of evaluating on no change (the original idea), the heuristic instead predicts the previous time step. What was meant to be evaluated was $X_{w}^{t+1} = X_{w}^{t}$}. Evaluation is done on all the baseline models for predicting a single time step ahead (10 minutes). But a recurrent version is also tested. After training the models, The output of the model becomes the new input. This is done for all time steps in the test data set.
 
 \begin{equation}
 	\label{eq:4.7}
