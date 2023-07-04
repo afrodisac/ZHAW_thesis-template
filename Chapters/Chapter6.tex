@@ -7,4 +7,28 @@
 \chapter{Discussion} % Main chapter title
 \label{Chapter6} % For referencing the chapter elsewhere, use \ref{Chapter1}
 
-\section{Interpretation of results}
+\section{Initial Screening}
+\subsubsection*{DEM Screening}
+The first test performed was to determine which dataset to move forward with. Due to computational limitations and time required for training. Fig. \ref{fig:dem-screening} shows some interesting variation across the datasets. DEM 292 and 709 seemed to show the most promise, but the final decision was to move forward with DEM 292. When we look at the mean values (see Fig. \ref{fig:mean-dem-screening}), We see that DEM 292 has a slightly lower loss than DEM 709. This decision was relatively arbitrary, however, it did have the lowest loss model and showed the fewest outliers. Also the recurrent time step predictions across the board were also the lowest.
+
+\subsubsection*{Normalization strategy}
+The decision for which normalization strategy to use was a challenging task. Due to the nature of the data, where DEM values are extremely large, rainfall values and water depths have a huge range and no real limit. Fig. \ref{fig:norm-strat-292} shows the losses for different normalization strategies. The raw, un normalized data, interestingly, showed a very low loss for the initial model but the recurrent prediction was quite poor and the benchmark models performed the worst overall. The "all Normed" dataset where all features are normalized according to the DEM map showed the greatest variation and seems to be ultimately unpredictable. This leaves us with the independently normalized dataset which shows the least variation and lowest losses. Moving forward, the Independently Normalized dataset is used.
+
+\subsubsection*{Loss Functions}
+Choosing the right loss function is a critical task for DL. The problems with classical MAE and MSE, which are essentially the only options for regression tasks like this (when dealing with two-dimensional, multi-channel tensors), in this case is their bias towards predicting 0 water depth. The nature of datasets like this, is its un balanced nature. Looking at the rainfall events (see Fig. \ref{fig:4.2} and \ref{fig:4.4}), we see there are many moments where there is very small or no rainfall. On top of that, the simulated data thresholds water depth. When water depth is less than 0.01 m, it outputs 0 (see Eq. \ref{eq:thresholdwd}).
+
+\begin{equation}
+	\label{eq:thresholdwd}
+	Wd_{new} = \begin{cases}
+		0, & \text{if } Wd < 0.01 \\
+		Wd, & \text{Otherwise}
+	\end{cases}
+\end{equation}
+
+Table \ref{tab:loss-functions-dem} shows the loss's across models for each loss function variation across the independently normalized dataset for DEM 292 (see Fig \ref{fig:loss-comparison-initial}) We see that MSE loss doesn't generally perform as well as MAE. This might be because the metric chosen was mae, so there is potential for bias. Weights chosen for the  manual weighted loss functions were 0.8 zero weight and 0.2 non zero weight. This may seem counter intuitive to what is mentioned above but it still performed the best. This is because predicting 0 change in water depth outperformed the Heuristic. MSE and MSE AUTO variations performed the worst by a large margin. While manual MAE performed the best. Therefore, we move forward with this variation.
+
+\section{Model Complexity and Hyperparameter Tuning}
+\subsubsection*{Predicting Water Depth}
+
+
+ 

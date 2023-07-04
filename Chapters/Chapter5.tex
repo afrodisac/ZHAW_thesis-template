@@ -4,12 +4,13 @@
 %----------------------------------------------------------------------------------------
 % CHAPTER 5
 %----------------------------------------------------------------------------------------
-\chapter{Results} % Main chapter title
+\chapter{Results and Discussion} % Main chapter title
 \label{Chapter5} % For referencing the chapter elsewhere, use \ref{Chapter5}
+All results shown in this section come from data analysis in Appendix \ref{AppendixB}.
 
 \section{Initial Dataset Screening}
 \subsubsection*{DEM Screening}
-The Initial dataset screen was done in order to evaluate the best DEM and normalization strategy. \footnote{In the legend, you will see a label "residual \_ model \_ mae". This is a typo and should be called Recurrent mae}
+The Initial dataset screen was done in order to evaluate the best DEM and normalization strategy. \footnote{In the legend, you will see a label "residual \_ model \_ mae". This is a typo and should be called Recurrent mae}. The plots and figures, unless otherwise specified, are evaluated using classic MAE (see Eq. \ref{eq:2.3}). 
 
 \begin{figure}[htbp]
 	\centering
@@ -25,10 +26,10 @@ The Initial dataset screen was done in order to evaluate the best DEM and normal
 	\label{fig:mean-dem-screening}
 \end{figure}
 
-Fig. \ref{fig:dem-screening} shows a box plot for all DEMS. It includes all the normalization strategies (see \ref{methods:inital-screening}). The model used is the DepthwiseCNN model (see \ref{DepthwiseCNN:init}) Fig. \ref{fig:mean-dem-screening} is a bar plot that shows the mean across all DEMs, normalization strategies, and loss functions (see loss functions defined \ref{training:loss}).
+Fig. \ref{fig:dem-screening} shows a box plot for all DEMS. It includes all the normalization strategies (see \ref{methods:inital-screening}). The model used is the DepthwiseCNN model (see \ref{DepthwiseCNN:init}) Fig. \ref{fig:mean-dem-screening} is a bar plot that shows the mean across all DEMs, normalization strategies, and loss functions (see loss functions defined \ref{training:loss}). This was the first test performed. It was done in order to determine which dataset to move forward with. Due to computational limitations and time required for training. Fig. \ref{fig:dem-screening} shows some interesting variation across the datasets. DEM 292 and 709 seemed to show the most promise, but the final decision was to move forward with DEM 292. When we look at the mean values (see Fig. \ref{fig:mean-dem-screening}), We see that DEM 292 has a slightly lower loss than DEM 709. This decision was relatively arbitrary, however, it did have the lowest loss model and showed the fewest outliers. Also the recurrent time step predictions across the board were also the lowest.
 
 \subsubsection*{Normalization strategy}
-Fig. \ref{fig:norm-strat-292} shows the loss for each normalization strategy across loss functions. This was used to determine which normalization performed the best, generally
+Fig. \ref{fig:norm-strat-292} shows the loss for each normalization strategy across loss functions. This was used to determine which normalization performed the best overall.
 
 \begin{figure}[tbph]
 	\centering
@@ -36,12 +37,14 @@ Fig. \ref{fig:norm-strat-292} shows the loss for each normalization strategy acr
 	\caption[Box plot for different normalization strategies]{Box plot showing the loss for different normalization strategies for DEM 292}
 	\label{fig:norm-strat-292}
 \end{figure}
-
+The decision for which normalization strategy to use was a challenging task. Due to the nature of the data, where DEM values are extremely large, rainfall values and water depths have a huge range and no real limit. Fig. \ref{fig:norm-strat-292} shows the losses for different normalization strategies. The raw, un normalized data, interestingly, showed a very low loss for the initial model but the recurrent prediction was quite poor and the benchmark models performed the worst overall. The "all Normed" dataset where all features are normalized according to the DEM map showed the greatest variation and seems to be ultimately unpredictable. This leaves us with the independently normalized dataset which shows the least variation and lowest losses. Moving forward, the Independently Normalized dataset is used.
 \subsubsection*{Loss Functions}
+Table \ref{tab:loss-functions-dem} Hows the loss of all loss functions used for testing over DEM 292. The Column Names are Heuristic (H), Benchmark 1 (BM1), Benchmark 2 (BM2), The current model in question (In this case the initial screening model), and the model but using recurrent prediction.
+
 \begin{table}[h]
 	\centering
 	\caption{Final Results For Loss Functions Across DEM 292}
-	\label{tab:sample}
+	\label{tab:loss-functions-dem}
 	\begin{tabular}{p{3cm}ccccc}
 		\toprule
 		Name &  H &  BM1 &  BM2 &  Model &  Recurrent \\
@@ -64,6 +67,17 @@ Where AUTO and MAN refer to the different regularization done on MSE and MAE. H 
 	\label{fig:loss-comparison-initial}
 \end{figure}
 
+Choosing the right loss function is a critical task for DL. The problems with classical MAE and MSE, which are essentially the only options for regression tasks like this (when dealing with two-dimensional, multi-channel tensors), in this case is their bias towards predicting 0 water depth. The nature of datasets like this, is its un balanced nature. Looking at the rainfall events (see Fig. \ref{fig:4.2} and \ref{fig:4.4}), we see there are many moments where there is very small or no rainfall. On top of that, the simulated data thresholds water depth. When water depth is less than 0.01 m, it outputs 0 (see Eq. \ref{eq:thresholdwd}).
+
+\begin{equation}
+	\label{eq:thresholdwd}
+	Wd_{new} = \begin{cases}
+		0, & \text{if } Wd < 0.01 \\
+		Wd, & \text{Otherwise}
+	\end{cases}
+\end{equation}
+
+Table \ref{tab:loss-functions-dem} shows the loss's across models for each loss function variation across the independently normalized dataset for DEM 292 (see Fig \ref{fig:loss-comparison-initial}) We see that MSE loss doesn't generally perform as well as MAE. This might be because the metric chosen was mae, so there is potential for bias. Weights chosen for the  manual weighted loss functions were 0.8 zero weight and 0.2 non zero weight. This may seem counter intuitive to what is mentioned above but it still performed the best. This is because predicting 0 change in water depth outperformed the Heuristic. MSE and MSE AUTO variations performed the worst by a large margin. While manual MAE performed the best. Therefore, we move forward with this variation.
 
 \section{Model Complexity and Hyperparameter tuning}
 
@@ -76,8 +90,10 @@ Two methods were evaluated. Models predicting water depth directly and models pr
 	\label{fig:diffvsnodiff}
 \end{figure}
 
+Fig \ref{fig:diffvsnodiff} shows that models trained to predict water depth directly have much more variability. Loss  for predicting a single time step has more outliers and performs worse on average than predicting the difference in water depth. However, it seems that recurrent time step prediction performs better. Only models that predict difference in water depth over a single time step perform better than the heuristic. Based on these results, further evaluation is only based on predicting difference in water depth.
+
 \subsubsection*{Model Complexity, Predicting Difference in Water Depth}
-Fig. \ref{fig:depthwise-complexity} shows the loss of different model complexities across epochs and learning rates. 
+Fig. \ref{fig:depthwise-complexity} shows the loss of different model complexities across epochs and learning rates. The shallow DepthwiseCNN model seems to show the best results. All model complexities out-perform the heuristic. Unfortunately, whilst generating data and deciding which models to do further testing on, only the best models were considered. In this case, the best performing model was a medium complexity model (see 5th row of Table \ref{tab:best_ss}). So further work was done on the medium complexity model. Further testing should be done on a simpler model, especially where the recurrent (and most useful) loss is concerned. 
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.7\linewidth, height=0.4\textheight]{Figures/Results/Diff_Complexity_Lr_Epochs/Complexity/Box_model_complexity}
@@ -85,8 +101,17 @@ Fig. \ref{fig:depthwise-complexity} shows the loss of different model complexiti
 	\label{fig:depthwise-complexity}
 \end{figure}
 
+
 \subsubsection*{Epochs and Learning Rate for Medium Complexity DepthwiseCNN}
-Fig \ref{fig:epochs} shows the model loss for the medium complexity DepthwiseCNN. This is across a variety of learning rates, which are shown in Table \ref{tab:lr}.
+Fig \ref{fig:epochs} shows the model loss for the medium complexity DepthwiseCNN. This is across a variety of learning rates, which are shown in Table \ref{tab:lr}. There was very little difference between the epochs. A reason for this might be due to the stop loss callback option used during training. Overall, across all testing, models struggled to learn anything. A reason for this may be due to being trapped in a local minima from the start. If the model was predicting no change, the loss was very low and even outperformed the heuristic. Fig \ref{fig:egloss-epochs} shows an example loss across all models (benchmark and DepthwiseCNN model).
+
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.6\linewidth, height=0.6\textheight]{Figures/Results/Diff_Complexity_Lr_Epochs/Epochs_Lr/medium_depthwise_diff_train_2_custom_mae_weighted_2e-3_more_epochs_norm_independant_292_training}
+	\caption[Example Loss for Medium depthwise model and benchmarks]{Example training loss for medium depthwise model and benchmarks}
+	\label{fig:egloss-epochs}
+\end{figure}
+
 
 \begin{figure}[tbph]
 	\centering
@@ -427,14 +452,17 @@ Table \ref{tab:worstr} shows the worst five performing models for predicting rec
 	\item Inital Depthwise Model using  auto MSE on the DEM 819 dataset where features are normalized independently. Trained using 2 Epochs, default learning rate of 1e-3.
 \end{enumerate}
 
-% TODO: \usepackage{graphicx} required
+The following plots where created after all initial testing to try and reproduce the models. Fig. \ref{fig:BRMR} Shows the water depths the true values, heuristic model, and deep learning model of a random cell in the test set using a recurrent time step method prediction. The model used was the best performing model for a single time step prediction.  (see Table. \ref{tab:best_r}). Fig. \ref{fig:BRMS} Shows the same plot but prediciting a single time step ahead. Fig. \ref{fig:BSMR} and \ref{fig:BSMS} Are the plots respectively but using the best single time step model (see Table. \ref{tab:best_ss}).
+
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_recurrentMAE_recurrent_random_cell}
 	\caption[Best Recurrent MAE random cell over time]{Water Depth Predictions recurrently over the test set timesteps}
 	\label{fig:BRMR}
 \end{figure}
-% TODO: \usepackage{graphicx} required
+
+
+
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_recurrentMAE_SS_random_cell}
@@ -442,7 +470,7 @@ Table \ref{tab:worstr} shows the worst five performing models for predicting rec
 	\label{fig:BRMS}
 \end{figure}
 
-% TODO: \usepackage{graphicx} required
+
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_SS_recurrent_random_cell}
@@ -450,7 +478,6 @@ Table \ref{tab:worstr} shows the worst five performing models for predicting rec
 	\label{fig:BSMR}
 \end{figure}
 
-% TODO: \usepackage{graphicx} required
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_SS_SS_random_cell}
@@ -458,7 +485,8 @@ Table \ref{tab:worstr} shows the worst five performing models for predicting rec
 	\label{fig:BSMS}
 \end{figure}
 
-% TODO: \usepackage{graphicx} required
+Fig. \ref{fig:SpatialTrue} Shows the spatial evolution of water depth on the test set and is used for comparison. Fig. \ref{fig:BMS-spatial} shows the best model from Table \ref{best:ss} and its spatial evolution of water depth over the test set. Fig. \ref{fig:adjusted-spatial} shows the spatial evolution of water depth on the test set using recurrent predictions. All other models predicted 0. This model is a slightly adjusted model, trained on lower epochs (2) and adjusting MAE weighting to 0.5 | 0.5. Fig. \ref{fig:adjusted-recurrent-rc} shows the recurrent preditions of a collection of random cells across the test set.
+
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_True_test_set}
@@ -467,21 +495,22 @@ Table \ref{tab:worstr} shows the worst five performing models for predicting rec
 \end{figure}
 
 
-% TODO: \usepackage{graphicx} required
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_SS_SS_test_set}
 	\caption[Spatial Single Time step Predictions]{Spatial Evolution for the Best Model Predicting single time steps}
 	\label{fig:BMS-spatial}
 \end{figure}
-% TODO: \usepackage{graphicx} required
+
+
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_SS_adjusted_weights(5,5)_spatial}
 	\caption[Best Model with adjusted weights Spatial recurrent time step Predictions]{Spatial Evolution for the Best Model with adjusted weights (0.5, 0.5) Predicting Recurrent time steps}
 	\label{fig:adjusted-spatial}
 \end{figure}
-% TODO: \usepackage{graphicx} required
+
+
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_SS_adjusted_weights(5,5)}
