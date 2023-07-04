@@ -116,6 +116,21 @@ From previous evaluation, A simple depth-wise CNN seemed to work well.  So the f
 		return dx + f1 # return summed wd
 	
 \end{lstlisting}
+The initial screening model has the following model summary,
+
+\begin{verbatim}
+	Model: "Inital Screening"
+	_________________________________________________________________
+	Layer (type)                 Output Shape              Param #   
+	=================================================================
+	sequential (Sequential)      (1, 3, 3, 1)              1489      
+	=================================================================
+	Total params: 1,489
+	Trainable params: 1,489
+	Non-trainable params: 0
+	_________________________________________________________________
+	None
+\end{verbatim}
 
 \subsubsection*{Adding Complexity}
 Here a grid search is done using configuration files (see listing \ref{lst:3} for an example configuration) on a modified model based on listing \ref{lst:1}. See listing \ref{lst:2}.
@@ -171,6 +186,51 @@ class DepthwiseCNN(tf.keras.Model):
 	}
 
 \end{lstlisting}
+
+Three models are looked at. Shallow, Medium, and Complex models. Their model summaries, respectively, are,
+
+\begin{verbatim}
+	Model: "depthwise_shallow"
+	_________________________________________________________________
+	Layer (type)                 Output Shape              Param #   
+	=================================================================
+	sequential_2 (Sequential)    (1, 3, 3, 1)              265       
+	=================================================================
+	Total params: 265
+	Trainable params: 265
+	Non-trainable params: 0
+	_________________________________________________________________
+	None
+\end{verbatim}
+
+\begin{verbatim}
+	Model: "depthwise_medium"
+	_________________________________________________________________
+	Layer (type)                 Output Shape              Param #   
+	=================================================================
+	sequential_3 (Sequential)    (1, 3, 3, 1)              1801      
+	=================================================================
+	Total params: 1,801
+	Trainable params: 1,801
+	Non-trainable params: 0
+	_________________________________________________________________
+	None
+\end{verbatim}
+
+\begin{verbatim}
+	Model: "depthwise_complex"
+	_________________________________________________________________
+	Layer (type)                 Output Shape              Param #   
+	=================================================================
+	sequential_4 (Sequential)    (1, 3, 3, 1)              23913     
+	=================================================================
+	Total params: 23,913
+	Trainable params: 23,913
+	Non-trainable params: 0
+	_________________________________________________________________
+	None
+\end{verbatim}
+
 \subsubsection*{Inception Block Inspired}
 The last model looked at was an Inception Block Inspired model with  varying complexity (see Listing \ref{lst:4}) with an example configuration (see Listing \ref{lst:5})
 
@@ -252,6 +312,49 @@ class IncepInspired(tf.keras.Model):
 	}
 	
 \end{lstlisting}
+Two versions of the model are created: Simple and Medium \footnote{The complex model was not able to train properly on the authors computer}.
+They have the following model summaries,
+
+\begin{verbatim}
+	Model: "incep_inspired_simple"
+	_________________________________________________________________
+	Layer (type)                 Output Shape              Param #   
+	=================================================================
+	sequential_5 (Sequential)    (1, 3, 3, 8)              110       
+	_________________________________________________________________
+	sequential_6 (Sequential)    (1, 3, 3, 8)              1388      
+	_________________________________________________________________
+	sequential_7 (Sequential)    (1, 3, 3, 8)              32        
+	_________________________________________________________________
+	sequential_8 (Sequential)    (1, 3, 3, 1)              5041      
+	=================================================================
+	Total params: 6,571
+	Trainable params: 6,571
+	Non-trainable params: 0
+	_________________________________________________________________
+	None
+\end{verbatim}
+
+\begin{verbatim}
+	Model: "incep_inspired_medium"
+	_________________________________________________________________
+	Layer (type)                 Output Shape              Param #   
+	=================================================================
+	sequential_9 (Sequential)    (1, 3, 3, 12)             924       
+	_________________________________________________________________
+	sequential_10 (Sequential)   (1, 3, 3, 12)             12044     
+	_________________________________________________________________
+	sequential_11 (Sequential)   (1, 3, 3, 12)             48        
+	_________________________________________________________________
+	sequential_12 (Sequential)   (1, 3, 3, 1)              29257     
+	=================================================================
+	Total params: 42,273
+	Trainable params: 42,273
+	Non-trainable params: 0
+	_________________________________________________________________
+	None
+\end{verbatim}
+
 
 \section{Training}
 \subsubsection*{Loss Functions}
@@ -323,6 +426,20 @@ class BenchMark1(tf.keras.Model): # Benchmark from the evalution paper (but redu
 			return dx
 	
 \end{lstlisting}
+The above baseline model has a model summary,
+\begin{verbatim}
+	Model: "bench_mark1"
+	_________________________________________________________________
+	Layer (type)                 Output Shape              Param #   
+	=================================================================
+	sequential (Sequential)      (1, 3, 3, 1)              39713     
+	=================================================================
+	Total params: 39,713
+	Trainable params: 39,713
+	Non-trainable params: 0
+	_________________________________________________________________
+	None
+\end{verbatim}
 
 The second benchmark model is a simple CNN but characterized by 1x1 convolutions in the second and third layer of the model. This model was established in prior testing.
 
@@ -362,6 +479,22 @@ The second benchmark model is a simple CNN but characterized by 1x1 convolutions
 				dx = self.dmodel(x)
 				return dx
 \end{lstlisting}
+
+It has a model summary of,
+\begin{verbatim}
+	Model: "bench_mark2"
+	_________________________________________________________________
+	Layer (type)                 Output Shape              Param #   
+	=================================================================
+	sequential_1 (Sequential)    (1, 3, 3, 1)              7489      
+	=================================================================
+	Total params: 7,489
+	Trainable params: 7,489
+	Non-trainable params: 0
+	_________________________________________________________________
+	None
+\end{verbatim}
+
 
 And finally a simple heuristic is used for a complete comparison. The heuristic is predicting the previous time step with no change (see Eq. \ref{eq:4.7}) \footnote{The roll function from the numpy module in python was used as the heuristic. An oversight occured and instead of evaluating on no change (the original idea), the heuristic instead predicts the previous time step. What was meant to be evaluated was $X_{w}^{t+1} = X_{w}^{t}$}. Evaluation is done on all the baseline models for predicting a single time step ahead (10 minutes). But a recurrent version is also tested. After training the models, The output of the model becomes the new input. This is done for all time steps in the test data set.
 

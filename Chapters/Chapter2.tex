@@ -55,11 +55,33 @@ In the above section, although beautiful and impressive, the examples are not pr
 \subsection{What Is Deep Learning}
 Deep learning is a subset of techniques within a class of algorithms known as Machine Learning (ML). In general, ML algorithms power increasingly more of our day to day lives \cite{lecun2015deep}. From auto-correct, to search engines, to recommendation systems, and even self-driving cars. The main difference between classical ML and DL is the former tends to require large amounts of domain knowledge and feature engineering to achieve good results. One of the main benefits of DL is their ability learn which features are important. However, classical ML tends to require a lot less data than DL models do. \\
 
- DL models are derived from simple neural networks (or multilayer perceptrons), which are motivated by biological neurons. They consist of a sequence of interconnected nodes, which creates a nonlinear mapping between inputs and outputs \cite{gardner1998artificial}. These nodes are connected by weights and signals are created via summing the inputs to the node and passed through an activation function making the system non-linear. By doing this, it is possible for the model to approximate complicated non-linear functions. A figure of a simple multilayer perceptron is in the appendix \ref{AppendixA} \ref{fig:appendix-mlp}. \\
+ DL models are derived from simple neural networks (or multilayer perceptrons), which are motivated by biological neurons. They consist of a sequence of interconnected nodes, which creates a nonlinear mapping between inputs and outputs \cite{gardner1998artificial}. These nodes are connected by weights and signals are created via summing the inputs to the node and passed through an activation function making the system non-linear. By doing this, it is possible for the model to approximate complicated non-linear functions.
  
+ \subsubsection*{Simple Multilayer Perceptron}
+ 
+ \begin{figure}[h]
+ 	\includegraphics[width=0.75\textwidth]{../Figures/neural-network.png}
+ 	%	\centering
+ 	\caption[An ANN]{A simple depiction of an artificial neural network} \url{https://texample.net/tikz/examples/neural-network/}
+ 	\label{fig:appendix-mlp}
+ \end{figure}
+ 
+ \begin{equation*}
+ 	y =  \sigma\left(\sum WX + B\right)
+ \end{equation*}
+ Where
+ \begin{align*}
+ 	y &  \text{ is the output or hidden layer} \\
+ 	\sigma &  \text{is the activation function} \\
+ 	X &  \text{ is the input vector} \\
+ 	W &  \text{ is the weight vector} \\
+ 	B &  \text{ Bias}
+ \end{align*}
+ Where Edges are weights and nodes are the sum of the weights *inputs + bias. An activation function like sigmoid or ReLu (which performs a kind of smooth mapping) is applied to this sum. What you might you might in the above equation is its similarity with the straight line function: $y = mx + c$. It indicates that a single neuron can learn to class a binary problem as long as it is linearly separable!. \\
+ 
+ \subsubsection*{Categories of Deep Learning}
  There are three main categories of deep learning: Supervised learning, Unsupervised learning, and reinforcement learning. \cite{alzubaidi2021review}. And within these three categories there are many different techniques. This thesis only considers the convolutional neural network, which is a type of supervised learning technique / architecture. 
 
-	
 \subsection{Convolutional Neural Networks}
 \subsubsection*{A Brief Overview}
 A Convolutional Neural Network (CNN) is a type of Artificial Neural Network (ANN) that is commonly used in image and video recognition , natural language processing, and other tasks that involve processing input data with a grid-like structure \cite{li2021survey}. CNN's, like MLP's, are biologically motivated, however, CNN's can be said to mimic an animal's visual cortex \cite{angermueller2016deep}. They are  able to extract important spatial features such as edges and corners of images but are also able to extract extremely complex features \cite{KATTENBORN202124}. CNN's are much better at image-related tasks than MLP's. One of the greatest aspects of CNN's is the kernel. The same weights are applied to whole image. This greatly reduces the parameter count compared to MLP's where every input node is connected to every output node. This allows CNN's to be trained much faster than MLP's.
@@ -99,9 +121,7 @@ The second is Mean Absolute Error (MAE),
 	MAE = \frac{\sum_{i=1}^{n}\left|y_{i} - \hat{y}_{i}\right|}{n}
 \end{equation}
 
-Where $n$ is the number of samples; $y_{i}$ is the target value; $\hat{y}_{i}$ is the predicted value.
-
-
+Where $n$ is the number of samples; $y_{i}$ is the target value; $\hat{y}_{i}$ is the predicted value. \\
 
 It is important to note that a loss function must be differentiable. The way neural networks are able to learn such complicated non-linear functions is because of the backpropagation algorithm. An optimizer algorithm like gradient descent (although many more exist) is used to minimize this loss function by driving it towards zero. It does this by calculating the optimizer with respect to the weight values for various inputs.
 
@@ -164,5 +184,13 @@ Now that we have some basic foundational knowledge about CA and CNN's, we can mo
 \end{figure}
 
 \subsection{Training} \footnote{The paper outlines multiple experiments. Only the initial experiment titled "Experiment 1: Learning to Grow " will be covered.}
-We start from a single black pixel, iterate the model over $x$ time steps, then compare the final result of this model with the target image we are training the model. We then perform a per-pixel difference or MSE (equation \ref{eq:2.2}) Then based on this loss we use ADAM optimizer to back-propagate through time to adjust the weights of the model until the model learns to grow or morph into the target image. An image can be seen in Appendix \ref{AppendixB} (\ref{fig:appendix-nca})
+We start from a single black pixel, iterate the model over $x$ time steps, then compare the final result of this model with the target image we are training the model. We then perform a per-pixel difference or MSE (equation \ref{eq:2.2}) Then based on this loss we use ADAM optimizer to back-propagate through time to adjust the weights of the model until the model learns to grow or morph into the target image (see Fig \ref{fig:nca-train}).
+	
+\begin{figure}[h]
+	\includegraphics[width=1\textwidth]{../Figures/training_nca.png}
+	\centering
+	\caption[NCA-training]{How the model learns a target pattern. This image is taken directly the \citetitle{growing_nca} paper \cite{growing_nca}} 
+	\label{fig:nca-train}
+	\url{https://distill.pub/2020/growing-ca/}
+\end{figure}
 

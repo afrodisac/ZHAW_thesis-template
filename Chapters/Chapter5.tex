@@ -367,7 +367,7 @@ Table \ref{tab:best_ss} shows the top performing models for predicting a single 
 \end{table}
 Table \ref{tab:best_r} shows the top five models based on recurrent water depth prediction across all training. The name column has the following key-value pairs,
 \begin{enumerate}
-	\item Medium Complexity DepthwiseCNN model predicting water depth directly. Trained on the normalized dataset with 10 epochs, a learning rate of 1e-4.
+	\item Medium Complexity DepthwiseCNN model predicting water depth directly. Trained on the normalized dataset with 10 epochs, a learning rate of 1e-4. 
 	\item Simple Complexity Inception Inspired model the normalized dataset with the added mask feature. Trained with 20 Epochs, a learning rate of 1e-3, manual MAE loss with zero weighting of 0,1 and non zero weighting 0,9.
 	\item Medium Complexity Inception Inspired Model on the normalized dataset with the  added mask feature, predicting difference in water depth. Trained with 20 Epochs, a learning rate of 1e-3, manual MAE loss with zero weighting of 0,2 and non zero weighting 0,8.
 	\item Medium Complexity DepthwiseCNN model predicting water depth directly. Trained on the normalized dataset with 2 epochs, a learning rate of 1e-4.
@@ -426,3 +426,69 @@ Table \ref{tab:worstr} shows the worst five performing models for predicting rec
 	\item Inital Depthwise Model using  auto MAE on the DEM 292 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3.
 	\item Inital Depthwise Model using  auto MSE on the DEM 819 dataset where features are normalized independently. Trained using 2 Epochs, default learning rate of 1e-3.
 \end{enumerate}
+
+% TODO: \usepackage{graphicx} required
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_recurrentMAE_recurrent_random_cell}
+	\caption[Best Recurrent MAE random cell over time]{Water Depth Predictions recurrently over the test set timesteps}
+	\label{fig:BRMR}
+\end{figure}
+% TODO: \usepackage{graphicx} required
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_recurrentMAE_SS_random_cell}
+	\caption[Best Recurrent Loss on single time step predictions over test set]{Best Recurrent Loss on single time step predictions over test set}
+	\label{fig:BRMS}
+\end{figure}
+
+% TODO: \usepackage{graphicx} required
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_SS_recurrent_random_cell}
+	\caption[Best single step model on test set predicting water depth for recurrent time steps]{Best single step model on test set predicting water depth for recurrent time steps}
+	\label{fig:BSMR}
+\end{figure}
+
+% TODO: \usepackage{graphicx} required
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_SS_SS_random_cell}
+	\caption[Best single time step model on predicting water depth for a single time step]{Best single time step model on predicting water depth for a single time step}
+	\label{fig:BSMS}
+\end{figure}
+
+% TODO: \usepackage{graphicx} required
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_True_test_set}
+	\caption[Spatial Evolution of True Water Depth for test set]{Spatial Evolution of True Water Depth for test set}
+	\label{fig:SpatialTrue}
+\end{figure}
+
+
+% TODO: \usepackage{graphicx} required
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_Model_SS_SS_test_set}
+	\caption[Spatial Single Time step Predictions]{Spatial Evolution for the Best Model Predicting single time steps}
+	\label{fig:BMS-spatial}
+\end{figure}
+% TODO: \usepackage{graphicx} required
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_SS_adjusted_weights(5,5)_spatial}
+	\caption[Best Model with adjusted weights Spatial recurrent time step Predictions]{Spatial Evolution for the Best Model with adjusted weights (0.5, 0.5) Predicting Recurrent time steps}
+	\label{fig:adjusted-spatial}
+\end{figure}
+% TODO: \usepackage{graphicx} required
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Final_Results/Best_SS_adjusted_weights(5,5)}
+	\caption[Spatial Single Time step Predictions]{Spatial Evolution for the Best Model Predicting recurrent time steps but with adjusted weights (0.5, 0.5)}
+	\label{fig:adjusted-recurrent-rc}
+\end{figure}
+
+
+
+

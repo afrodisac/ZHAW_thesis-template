@@ -1,42 +1,18 @@
 % !TEX root = ../main.tex
 
 %----------------------------------------------------------------------------------------
-% APPENDIX C
+% APPENDIX B
 %----------------------------------------------------------------------------------------
 
-\chapter{Building Intuition About NCA} % Main appendix title
+\chapter{Raw Output From Training} % Main appendix title
 
 \label{AppendixB} % For referencing this appendix elsewhere, use \ref{AppendixB}
 
-Based on the amazing work of \citeauthor{growing_nca} and his associated tutorials \footnote{A link to his youtube channel \href{https://www.youtube.com/@zzznah}{here}} , I implemented a simplified version of this NCA in Tensorflow. The first attempt was just copying the code and playing with the notebook available \href{https://colab.research.google.com/github/google-research/self-organising-systems/blob/master/notebooks/growing_ca.ipynb}{here}. Next was simplifying the model to point I could understand the code. It turns out that a lot of the work that went into this paper was creating an incredibly robust model that was invariant to many factors, such as rotation, regrowth, and persistence. All of which I didn't really need for my purposes. And once I had a grasp of the basic concepts I could expand the model / training as needed.
+\appendix
 
-Some things I did not implement from the paper:
-\begin{itemize}
-	\item Damaging the model to train for regrowth
-	\item Playing around with the fire rate as 0.5 seemed to work best based on the paper anyways
-	\item Creating a circle mask around the image such that it doesn't rely on edges to grow certain features (or in some cases the whole image)
-\end{itemize}
+%Here is the CSV data imported into a table:
+%
+{\tiny
+\verbatiminput{Appendices/rawdata.csv}
+}
 
-One method I implemented from the original paper was the pooling section. 
-\begin{lstlisting}[language=Python]
-class Pooling:
-	def __init__(self, n_channels=16, pool_size=1024, size=(40,40),  padding_size=16, sample_size=8):
-		self.pool_size = pool_size
-		self.n_channels = n_channels
-		self.sample_size = sample_size
-		self.size = size
-		seed = Pooling.make_seed(size[0]+padding_size, size[1]+padding_size, self.n_channels)
-		self.the_pool = seed.repeat(self.pool_size, axis=0)
-	
-	def get_sample(self):
-		inds = np.random.choice(self.pool_size, self.sample_size, False)
-		batch = self.the_pool[inds]
-		return inds, batch
-	
-	def commit(self, inds, outputs):
-		self.the_pool[inds] = outputs
-		   
-\end{lstlisting}
-This is just a way to artificially increase the amount of iterations the model performs to make sure that once the image has been accurately grown, the image remains after an arbitrary amount of time-steps. It does this by sampling final grown images from training and uses this as the initial configuration of the model. So if during training, you start from a seed configuration of a single black pixel in the center of the blank image, and allow it to grow to grow for example 50 time steps until it produces an image, then during the next iteration of training, the initial configuration will be that image and needs to remain that image for 50 time-steps. Essentially artificially increasing the time steps from 50 to 100 without having to perform back-propagation over 100 time-steps.
-
-There were some issues with this method though. If you don't have a sufficiently large enough pool then the pool might get clogged up with terrible, failed images that are essentially just noise. it is better to use this at later stages of training when it isn't growing randomly.
