@@ -103,11 +103,11 @@ Fig. \ref{fig:depthwise-complexity} shows the loss of different model complexiti
 
 
 \subsubsection*{Epochs and Learning Rate for Medium Complexity DepthwiseCNN}
-Fig \ref{fig:epochs} shows the model loss for the medium complexity DepthwiseCNN. This is across a variety of learning rates, which are shown in Table \ref{tab:lr}. There was very little difference between the epochs. A reason for this might be due to the stop loss callback option used during training. Overall, across all testing, models struggled to learn anything. A reason for this may be due to being trapped in a local minima from the start. If the model was predicting no change, the loss was very low and even outperformed the heuristic. Fig \ref{fig:egloss-epochs} shows an example loss across all models (benchmark and DepthwiseCNN model).
+Fig \ref{fig:epochs} shows the model loss for the medium complexity DepthwiseCNN. This is across a variety of learning rates, which are shown in Table \ref{tab:lr}. There was very little difference between the epochs. A reason for this might be due to the stop loss callback option used during training. Overall, across all testing, models struggled to learn anything. A reason for this may be due to being trapped in a local minima from the start. If the model was predicting no change, the loss was very low and even outperformed the heuristic. Fig \ref{fig:egloss-epochs} shows an example loss across all models (benchmark and DepthwiseCNN model). Where m is the model, b1, is benchmark 1 and b2 is benchmark 2. The reason for the large difference in loss is due to the type of loss functions employed. The benchmark models were always trained using standard MAE and default learning rate of 1e-3. The custom loss functions used for training the model of interest always increased the loss by 1000 times. The motivation for this was it would be easier to for the model to learn from a larger loss than a tiny loss.
 
 \begin{figure}[tbph]
 	\centering
-	\includegraphics[width=0.6\linewidth, height=0.6\textheight]{Figures/Results/Diff_Complexity_Lr_Epochs/Epochs_Lr/medium_depthwise_diff_train_2_custom_mae_weighted_2e-3_more_epochs_norm_independant_292_training}
+	\includegraphics[width=0.9\linewidth, height=0.3\textheight]{Figures/Results/Diff_Complexity_Lr_Epochs/Epochs_Lr/medium_depthwise_diff_train_2_custom_mae_weighted_2e-3_more_epochs_norm_independant_292_training}
 	\caption[Example Loss for Medium depthwise model and benchmarks]{Example training loss for medium depthwise model and benchmarks}
 	\label{fig:egloss-epochs}
 \end{figure}
@@ -120,6 +120,7 @@ Fig \ref{fig:epochs} shows the model loss for the medium complexity DepthwiseCNN
 	\label{fig:epochs}
 \end{figure}
 
+From Table \ref{tab:lr}, the different learning rates had little effect on model performance. All learning rates performed better than the heuristic for medium complexity models. However, there did seem to be an effect on recurrent time step predictions. A learning rate of 1e-4 seemed to show the most promise, at least for recurrent time step predictions so this is what we use moving  forward, unless otherwise specified.
 \begin{table}[htbp]
 	\centering
 	\caption{Final losses for different learning rate with Medium Complexity}
@@ -163,9 +164,12 @@ Table \ref{tab:weights} shows the loss for different weights for the manual MAE 
 		\bottomrule
 	\end{tabular}
 \end{table}
-Where the name indicates zero weight and non zero weight respectively. (eg. zero weight of 0.9 and non zero weight of 0.1, i.e. 0.9|0.1)
+Where the name indicates zero weight and non zero weight respectively. (eg. zero weight of 0.9 and non zero weight of 0.1, i.e. 0.9|0.1). \\
+
+Since the manual MAE loss function performed the best. The correct weight ratio was searched for. In Table \ref{tab:weights}, we see no meaningful difference (at most 0.000006 difference between weights.) This is a surprising result but as can be seen in Fig \ref{fig:egloss-epochs} models struggle to learn in general. manual MAE with weighting of 0.5 | 0.5 was used for the rest of the evaluations unless otherwise specified.
+
 \subsubsection*{Shuffling the Data}]
-Table \ref{tab:suffle} shows the results of shuffling the data using the function 'train \_ test \_ split()' from the python library sklearn with kwarg** shuffle=True.
+Table \ref{tab:suffle} shows the results of shuffling the data using the function 'train \_ test \_ split()' from the python library sklearn with kwarg** shuffle=True. There was no meaningful difference between shuffling the data or not.
 \begin{table}[h]
 	\centering
 	\caption{The loss for shuffled or not shuffled}
@@ -182,13 +186,13 @@ Table \ref{tab:suffle} shows the results of shuffling the data using the functio
 
 \section{Additional Features}
 
+Fig \ref{fig:norm-rain-mask-init} shows the loss of models between the different feature datasets. From this plot it is clear that the original, independently normalized dataset shows the most constant and lowest losses across the board. So this is the dataset that will be considered for further evaluation. The motivation added rainfall directly to the water depth, is this is how the CADDIE model works. Unfortunately, due to the fact there are so little features anyway, the  model was not able to correctly learn with this data. Although the model still outperformed the heuristic. Then the mask dataset is tested. The motivation is again because of the CADDIE model. Areas outside the catchment are considered run-off and some masked areas might make it into the training dataset. It would be hard for the model to differentiate the zero padding (which is there to preserve the shape of the input) from a masked area that should be run-off. 
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.7\linewidth, height=0.5\textheight]{Figures/Results/feature_manip/feature_manip_across_lr}
-	\caption[Loss For Three different Datasets With Different Features]{Loss for Three different Datasets with Different Features across different training configurations}
+	\caption[Loss For Three different Datasets With Different Features]{Loss for Three different Datasets with Different Features across varying training configurations}
 	\label{fig:norm-rain-mask-init}
 \end{figure}
-
 
 \begin{table}[htbp]
 	\centering
@@ -220,7 +224,16 @@ And the second number indicates the learning rate,
 	\item  1e-3
 	\item  1e-4
 \end{enumerate}
-For example [w11] from Table \ref{tab:weighte_lr} w11 would be weight ratio of 0.5 zero weight and 0.5 non zero weight, with a learning rate of 1e-2.
+For example [w11] from Table \ref{tab:weighte_lr} is the weight ratio of 0.5 zero weight and 0.5 non zero weight, with a learning rate of 1e-2. Here we see that such a high learning rate negatively impacts models and reaffirms that the weights had little impact except in the case of [w21] which performed much worst than the rest in terms of loss. One "success" was for a different weighting scheme but was not able to be reproduced  can be seen in Fig \ref{fig:random-success}. The it was trained on the original, independently normalized dataset, with a learning rate of 1e-4, using the manual weighted MAE loss function with weights 0.1 | 0.9.
+
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{"Figures/Results/feature_manip/medium_depthwise_diff_train_4_custom_mae_weighted_7_20 epochs_norm_independant_normal_292_random_cell_residual"}
+	\caption[Medium depthwise model random cell residual time step predictions]{Medium depthwise model random cell residual time step predictions}
+	\label{fig:random-success}
+\end{figure}
+
+This figure at least shows the model was able to learn a non-linear recurrent  prediction and shows some glimmer of hope that a DL model could be capable of learning flood modeling.
 
 
 \section{Inception Inspired Model}
@@ -230,8 +243,12 @@ In this section, column names are w1, w2, w3, They represent the following train
 	\item[w2] 20 Epochs, learning rate of 1e-3, manual MAE with zero weight 0,2 and non zero weight of 0,8
 	\item[w3] 20 Epochs, learning rate of 1e-3, manual MAE with zero weight 0,1 and non zero weight of 0,9
 \end{enumerate}
+
+The motivation for using this model is it's ability to generate it's own feature maps using a variety techniques and then concatenating the results, which is then fed into into another sequential layer. overall the results are quite similar to the DepthwiseCNN models but did perform slightly better.
 \subsubsection*{Training Across Different Feature Datasets}
-Fig. \ref{fig:incep-normaldset}, \ref{fig:incep-rfdset}, \ref{fig:incep-maskdset} are the plots showing the losses of two different model complexities, simple and medium, across varying learning rates and weights for the manual MAE (see above).
+Fig. \ref{fig:incep-normaldset}, \ref{fig:incep-rfdset}, \ref{fig:incep-maskdset} are the plots showing the losses of two different model complexities, simple and medium, across varying learning rates and weights for the manual MAE (see above). The models performed the best on the independently normalized dataset, as with the DepthwiseCNN model from the previous section. However, it seems that the masked dataset showed  less variability for recurrent predictions. Fig. \ref{fig:eg-simpincep} shows that the simple complexity Inception Inspired model also manages to learn something for recurrent predictions.
+
+
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Inception_model/normal_dataset}
@@ -254,7 +271,16 @@ Fig. \ref{fig:incep-normaldset}, \ref{fig:incep-rfdset}, \ref{fig:incep-maskdset
 	\label{fig:incep-maskdset}
 \end{figure}
 
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Inception_model/simple_incep_train_5_custom_mae_weighted_10_norm_independant_normal_292_random_cell_residual}
+	\caption[Simple Inception Inspired model on original independently normed dataset]{Simple Inception Inspired model on original independently normed dataset for a random cell predicting recurrently}
+	\label{fig:eg-simpincep}
+\end{figure}
+
+
 \subsubsection*{Simple model}
+Table \ref{tab:simple_normal} shows that the different training regimes don't have meaningful impact on results. An example loss can be seen in Fig \ref{fig:simple-incep-loss}. Where the results from training are very reminscent of the DepthwiseCNN architecture. 
 \begin{table}[htbp]
 	\centering
 	\caption{Three training configurations on the normal dataset for simple inception based model}
@@ -270,6 +296,15 @@ Fig. \ref{fig:incep-normaldset}, \ref{fig:incep-rfdset}, \ref{fig:incep-maskdset
 	\end{tabular}
 \end{table}
 
+
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Results/Inception_model/simple_incep_train_5_custom_mae_weighted_8_norm_independant_rf_added_292_training}
+	\caption[Loss during training of simple inception inspired model versus benchmark models]{Loss during training of simple inception inspired model versus benchmark models}
+	\label{fig:simple-incep-loss}
+\end{figure}
+
+In Table \ref{tab:simple_rf} we see that the model has the worst overall loss when comparing against the other feature datasets.
 \begin{table}[htbp]
 	\centering
 	\caption{Three training configurations on the rainfall added dataset for simple inception based model}
@@ -302,7 +337,7 @@ Fig. \ref{fig:incep-normaldset}, \ref{fig:incep-rfdset}, \ref{fig:incep-maskdset
 
 
 \subsubsection*{Medium Model}
-The Medium complexity model increases parameter count slightly. The results are shown below
+The Medium complexity model increases parameter count dramatically. The results are shown below.
 \begin{table}[htbp]
 	\centering
 	\caption{Three training configurations on the normal dataset for medium inception based model}
@@ -347,6 +382,8 @@ The Medium complexity model increases parameter count slightly. The results are 
 		\bottomrule
 	\end{tabular}
 \end{table}
+
+From Tables \ref{tab:medium_normal}, \ref{tab:medium_rf}, \ref{tab:medium_mask}, The results for the masked and normal datasets are similar but best results are still seen in the original independent dataset. Although the medium complexity Inception Inspired model outperforms the simple version, the increased parameter count and time needed to train also needs to be considered in future evaluations. In the below section, results across all training of all models are compared. \\
 
 \section{Final Results Overall}
 \begin{table}[htbp]
@@ -452,7 +489,7 @@ Table \ref{tab:worstr} shows the worst five performing models for predicting rec
 	\item Inital Depthwise Model using  auto MSE on the DEM 819 dataset where features are normalized independently. Trained using 2 Epochs, default learning rate of 1e-3.
 \end{enumerate}
 
-The following plots where created after all initial testing to try and reproduce the models. Fig. \ref{fig:BRMR} Shows the water depths the true values, heuristic model, and deep learning model of a random cell in the test set using a recurrent time step method prediction. The model used was the best performing model for a single time step prediction.  (see Table. \ref{tab:best_r}). Fig. \ref{fig:BRMS} Shows the same plot but prediciting a single time step ahead. Fig. \ref{fig:BSMR} and \ref{fig:BSMS} Are the plots respectively but using the best single time step model (see Table. \ref{tab:best_ss}).
+The following plots where created after all initial testing to try and reproduce the models. Fig. \ref{fig:BRMR} Shows the water depths the true values, heuristic model, and deep learning model of a random cell in the test set using a recurrent time step method prediction. The model used was the best performing model for a single time step prediction.  (see Table. \ref{tab:best_r}). Fig. \ref{fig:BRMS} Shows the same plot but predicting a single time step ahead. Fig. \ref{fig:BSMR} and \ref{fig:BSMS} Are the plots respectively but using the best single time step model (see Table. \ref{tab:best_ss}).
 
 \begin{figure}[tbph]
 	\centering
@@ -518,6 +555,17 @@ Fig. \ref{fig:SpatialTrue} Shows the spatial evolution of water depth on the tes
 	\label{fig:adjusted-recurrent-rc}
 \end{figure}
 
+In terms of the Objectives of this thesis. At least for the experiments conducted, NCA have failed to produce meaningful results in flood modeling. The models were unable to accurately learn the training data, let alone generalize to the other rainfall patterns. And finally, although there some glimmers of hope regarding recurrent predictions (but reproducible with the remaining time for this thesis), ultimately the emergent properties alluded the author.
+
+\section{Limitations}
+Although the vast majority of models outperformed the benchmark models and heuristic, they were unable to recurrently predict water depths across time points. Even single time step prediction was only predicting no change in water depth despite trying to account for this in the loss functions. There are many reasons for this which are outlined here,
+\begin{enumerate}[align=left]
+	\item[Normalization Strategy: ]  Only three normalization techniques were tested. This was a a very difficult problem to tackle due to the range within features. Perhaps the way normalization was done, hindered the models ability to learn
+	\item[Computational Limitations: ] Training data had to be sub sampled. Since time steps were 10 minute intervals and the DEM has a spatial resolution of 1 m, water is able to propagate many cells downstream. When sub sampling is used, the model does not have access to this information. Which may have resulted in the models' being unable to learn correctly. This sub sampling technique also makes padding more of an issue. How is the model meant to know whether the data is outside a catchment area or whether it is just zero padding? It may be unable to determine this information. Or if a sub sample of data is upstream or downstream of another subsample.
+	\item[Loss Function and Metric: ] Perhaps the metric of evaluation could be improved. mae error across the whole dataset may proiritize the model to predict no change as many of the cells are 0 from the simulated data. 
+	\item[Un-Balanced Data: ] The rainfall patterns are quite strange and most of the rainfall occurs in small time windows. Therefore most time steps have 0 water depth. This means predicting 0 water depth results in a very low loss
+	\item[Single Time Step Prediction: ] A problem with this approach is not practically useful unless emergent properties like recurrent predictions are obtained which was not the case in this evaluation.
+\end{enumerate}
 
 
 
