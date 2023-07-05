@@ -10,14 +10,14 @@ In this chapter, the relevant literature and background information is discussed
 \section{Cellular Automata}
 \subsection{An Overview}
 
-Cellular Automata are fascinating computational models, which typically have very simple rules that result in complicated behavior. They were first introduced by John Von Neuman \cite{sarkar2000brief} as models for self-replicating organisms. Since then they have found relevance in an extremely wide variety of fields but mainly used in modeling biological and physical systems. \\
+CA are fascinating mathematical models, which typically have very simple rules that result in complicated behavior. They were first introduced by John Von Neuman \cite{sarkar2000brief} as models for self-replicating organisms. Since then they have found relevance in a wide variety of fields but are mainly used for modeling biological and physical systems. \\
 
-Typically, Cellular Automata are modeled on a discrete 1D or 2D lattice. The most famous Cellular Automata are John Conway's Game of Life (GOL) and Steven Wolfram's Elemetary Cellular Automata, the former of which will be discussed in the below section.
-From here on 'Cellular Automata' and 'Cellular Automaton' will be referred to as CA.
+Typically, CA are modeled on a discrete 1D or 2D lattice. The most famous CA are John Conway's Game of Life (GOL) and Steven Wolfram's Elementary CA, the former of which will be discussed in the below section.
 \subsection{What is a CA?}
 
-CA are some of the simplest computational models that exist. They consist of a discrete lattice or grid of cells (Typically these manifolds are 1D or 2D but can be $d$ dimensional). Each cell has a discrete state (or set of states). The most common of which, are binary states like in the case of Elementary CA and GOL \footnote{It is important to note, though, that variations of this exist and a lot of research has been done in the continuous state domain. A famous example of this within the CA community is Lenia: Smooth life \cite{chan2018lenia}. The reason for this note is CA used for flood modeling as well as some other systems utilize this continuous state system}. Probably the most important aspect of CA systems are their local update rules'. In order for a cell to be updated, the cell considers the states of itself, as well as the states of its neighbors, and based on some rule, the cell updates. In classical CA, cells update synchronously based on some global clock \footnote{This feature of classical CA also has variation, like in the case of stochastic CA \cite{fates2013stochastic}, where cells update asynchronously.}. Based on these features, very simple rules can result in extremely complex behaviour. \\
-To help build intuition about CA and its associated notation, I will discuss John Conway's Game Of Life (GOL). GOL will be mentioned a lot in this thesis because it is a simple example and widely known CA.
+CA are some of the simplest computational models that exist. They consist of a discrete lattice or grid of cells (Typically these manifolds are 1D or 2D but can be $d$ dimensional). Each cell has a discrete state (or set of states). The most common of which, are binary states like in the case of Elementary CA and GOL \footnote{It is important to note, though, that variations of this exist and a lot of research has been done in the continuous state domain. A famous example of this within the artificial life (ALIFE) community is Lenia: Smooth life \cite{chan2018lenia}. The reason for this note is CA used for flood modeling as well as some other systems utilize this continuous state system}. Probably the most important aspect of CA systems are their local update rules'. In order for a cell to be updated, the cell considers the states of itself, as well as the states of its neighbors, and based on some predefined rule, the cell updates. In classical CA, cells update synchronously based on some global clock \footnote{This feature of classical CA also has variation, like in the case of stochastic CA \cite{fates2013stochastic}, where cells update asynchronously.}. Based on these features, very simple rules can result in extremely complex behaviour. Including Turing Completeness (like in the case of GOL and Rule 110) \\
+
+To help build intuition about CA and its associated notation, I will discuss GOL.
 
 \subsection{Mathematical Description of CA}
 \subsubsection*{Definition}
@@ -27,7 +27,7 @@ An arbitrary CA is typically represented as a 4-tuple, with time, $T$, omitted:
 	A = (L, S, N, f)
 \end{equation}
 
-Where $A$ is the CA; $L$ is the $d$-dimensional lattice; $S$ is the set of possible states; $N \subset L$ is the neighbourhood; $f$ is the local update rule with $f: S^{N}\rightarrow S$. 
+Where $A$ is the CA; $L$ is the $d$-dimensional lattice; $S$ is the set of possible states; $N \subset L$ is the neighborhood; $f$ is the local update rule with $f: S^{N}\rightarrow S$. 
 \subsubsection*{Defining Game Of Life}
 The following are the general rules written in natural language and in the subsequent section we will demonstrate the notation used for such as system.
 
@@ -43,17 +43,35 @@ The following are the general rules written in natural language and in the subse
 		\item Any dead cell with exactly three live neighbors becomes alive, as if by reproduction.
 	\end{enumerate}
 \end{enumerate}
+To describe GOL mathematically using the above rules we define $A_{GoL} = (L, S, N, \phi )$, where $L=Z^{2}$ is the two-dimensional discrete lattice, $S=\{ 0, 1 \}$ is the singular state set, and $N = \{ -1, 0, 1 \} ^{2}$ is the Moore neighborhood (or the eight surrounding neighborhood and itself). We say the neighborhood sum of some site $x$ is:
+\begin{equation}
+	S^{t}(x) = \sum_{n \in N}A^{t}(x+n)
+\end{equation}
+Every site is synchronously updated according to the local rule:
+\begin{equation}
+	A^{t+1} = \begin{cases}
+		1 \text{ if } A^{t}(x) = 0 \text{ and } S^{t}(x) \in \{3 \} \\
+		1 \text{ if } A^{t}(x) = 1 \text{ and } S^{t}(x) \in \{2, 3 \} \\
+		0 \text{ otherwise }
+	\end{cases}
+\end{equation}
+By applying these rules iteratively, the Game of Life evolves and creates various patterns, including static configurations, oscillators, and spaceships that move across the grid in an organized structure. The simplicity of these rules gives rise to complex and intriguing dynamics (see Fig \ref{fig:breeder}).
 
-By applying these rules iteratively, the Game of Life evolves and creates various patterns, including static configurations, oscillators, and spaceships that move across the grid. The simplicity of the rules gives rise to complex and intriguing dynamics within the cellular automaton known as the Game of Life.
-
+\begin{figure}[tbph]
+	\centering
+	\includegraphics[width=0.8\linewidth, height=0.3\textheight]{Figures/Conways_game_of_life_breeder}
+	\caption[Example Game Of Life Pattern (Breeder)]{The Breeder Pattern in Game of Life. Created by Hyperdeath - Own work, CC BY-SA 3.0, }
+	\label{fig:breeder}
+	\url{https://commons.wikimedia.org/w/index.php?curid=5117698}
+\end{figure}
 
 
 \subsection{Why are they useful?}
-In the above section, although beautiful and impressive, the examples are not practival. But the same motivation and methods can be extrapolated to model physical or biological systems. Especially many differentiable equations that can be descritized in time and space can be modeled using CA. Many examples have been demonstrated over the years. In the following chapter \ref{Chapter3}, the CADDIE2D model is discussed in detail. But other examples include: particle simulation, chemical reactions, fire modeling, human and animal dynamics to name a few. [must find references for this.]
+In the above section, although beautiful and impressive, the examples are not practical. But the same motivation and methods can be extrapolated to model physical or biological systems. For example, many differentiable equations that can be discretized in time and space can be modeled using CA. Many examples have been demonstrated over the years. In the following Chapter \ref{Chapter3}, the CADDIE model is discussed in detail. But other examples include: particle simulation, chemical reactions, fire modeling, human and animal dynamics \cite{karafyllidis1997model, kier2005modeling, wolf2004lattice, alizadeh2011dynamic} to name a few.
 
 \section{Deep Learning}
 \subsection{What Is Deep Learning}
-Deep learning is a subset of techniques within a class of algorithms known as Machine Learning (ML). In general, ML algorithms power increasingly more of our day to day lives \cite{lecun2015deep}. From auto-correct, to search engines, to recommendation systems, and even self-driving cars. The main difference between classical ML and DL is the former tends to require large amounts of domain knowledge and feature engineering to achieve good results. One of the main benefits of DL is their ability learn which features are important. However, classical ML tends to require a lot less data than DL models do. \\
+Deep learning (DL) is a subset of techniques within a class of algorithms known as Machine Learning (ML). In general, ML algorithms power increasingly more of our day to day lives \cite{lecun2015deep}. From auto-correct \cite{etoori2018automatic}, to search and recommendation systems \cite{haldar2019applying}, and even self-driving cars \cite{gupta2021deep}. The main difference between classical ML and DL is the former tends to require large amounts of domain knowledge and feature engineering to achieve good results \cite{dargan2020survey}. One of the main benefits of DL is their ability learn which features are important. However, classical ML tends to require a lot less data than DL models do. \\
 
  DL models are derived from simple neural networks (or multilayer perceptrons), which are motivated by biological neurons. They consist of a sequence of interconnected nodes, which creates a nonlinear mapping between inputs and outputs \cite{gardner1998artificial}. These nodes are connected by weights and signals are created via summing the inputs to the node and passed through an activation function making the system non-linear. By doing this, it is possible for the model to approximate complicated non-linear functions.
  
@@ -90,10 +108,10 @@ A Convolutional Neural Network (CNN) is a type of Artificial Neural Network (ANN
 An example of a typical CNN architecture can be seen in figure \ref{CNN:components}
 \begin{enumerate}[align=left]
 	\item[Convolutional Layer:] This is what makes a CNN a CNN, this layer applies a set of filters to the input data to extract relevant features for the task at hand. The filters are typically small in size and designed to detect patterns, such as edges or corners. The output of the convolutional layer then goes through a non-linear activation function, such as the rectified linear unit (ReLU) \footnote{ReLU is generally the preferred activation function because it tends to allow for much faster training \cite{krizhevsky2017imagenet}}, which introduces non-linearity into the network.
-	\item[Deepthwise Convolutional Layer:] This is an interesting component and is not incredibly common. It allows for the feature mapping in specific channels. This makes it easier for the model to extract important features because it doesn't have to simultaneously learn all three channels at once \cite{chollet2017xception}.
+	\item[Deepthwise Convolutional Layer:] This layer allows for feature mapping in singular channels. This makes it easier for the model to extract important features because it doesn't have to simultaneously learn all three channels (in the case of images) at once \cite{chollet2017xception}.
 	\item[Pooling Layer:] This layer is meant to reduce parameter count and extract important features from the previous convolutional output. There are two types of common pooling layers: \begin{enumerate}
 		\item[1:] Max Pooling. This applies a convolution that extracts the maximum value from the neighbourhood.
-		\item[2:] Average Pooling. This applies a convolution and takees the average of the neighbourhood.
+		\item[2:] Average Pooling. This applies a convolution and takes the average of the neighbourhood.
 	\end{enumerate}
 	\item[1x1 Convolutional layer:] This layer is very similar to a fully connected layer. It is used for dimensionality reduction or promotion. One can think of this as mini neural network for each pixel \ element of the previous layers output. The output of a 1x1xD convolution will have the same spatial resolution as the input into this layer with D channels.
 	\item[Fully Connected Layer:] This layer is just a typical MLP and is often used as the output layer for classification tasks. It works by connecting each element of the previous layer to each output node.
@@ -128,7 +146,7 @@ It is important to note that a loss function must be differentiable. The way neu
 \section{The Relationship Between CA and CNN}
 \label{ca-cnn}
 \subsection{CNN as a CA}
-As it turns out, CNN's are extremely similar \footnote{The idea for this section came from personal communication (Dr. Martin Schüle, May 2023)}. Cellular automata (CA) and convolutional neural networks (CNN) are both types of mathematical models that can be used to process and analyze data with a grid-like structure, such as images or time series data. \cite{PhysRevE.100.032402}
+As it turns out, CNN's are extremely similar \footnote{The idea for this section came from personal communication (Dr. Martin Schüle, May 2023)}. Cellular automata (CA) and convolutional neural networks (CNN) are both types of mathematical models that can be used to process and analyze data with a grid-like structure, such as images or time series data. \cite{PhysRevE}
 
 Both models operate by processing the input data in a local and hierarchical manner. In a CA, the state of each cell is updated based on the states of its neighboring cells. In the case of Wolfram's Elementary CA and GOL, this is done with a look-up table. CNN's use filters / kernels, which are applied to local patches of the input data to extract relevant features. However, one can think of a neighbourhood as a $NxM$ kernel or filter. In fact, by utilizing a cleverly constructed kernel and activation function, one can model many CA. A simple example of this would be game of life represented as a convolution. \\
 
@@ -158,23 +176,23 @@ And then add an activation function, $\sigma$: \\ \\
 	\end{cases}
 \end{equation}
 
-Then the components of the 4-tuple \ref{eq:2} becomes,
+Then the components of the 4-tuple (see Eq. \ref{eq:2}) becomes,
 \begin{equation}
 	\label{eq:2.4}
 	A_{GOL} = (L, S, \ \omega , \ \sigma )
 \end{equation}
-It turns out that CNN's can learn the rules of arbitrary CA's \cite{PhysRevE.100.032402}, for example game of life, and it doesn't need a particularly deep architecture to do so. it does this by essentially learning the kernel / filter weights that needs to be applied. To use a CNN as a CA, you essentially turn the CA into a binary classification problem to predict the state of each cell.
+It turns out that CNN's can learn the rules of arbitrary CA's \cite{PhysRevE}, for example GOL, and it doesn't need a particularly deep architecture to do so. it does this by essentially learning the kernel / filter weights that needs to be applied. To use a CNN as a CA (with a binary state space), you essentially turn the CA into a binary classification problem to predict the state of each cell.
 
 \section{Neural Cellular Automata}
 
 This section attempts to summarize the paper, \citetitle{growing_nca} by \citeauthor{growing_nca} \cite{growing_nca}
 \subsection{Brief Background}
 
-The motivation for this NCA, like the MLP and CNN, is biologically motivated. In this case, cell morphology was the topic of interest. How do cells, using local information like the cells around them and chemical gradients 'know' what type of organ or tissue to become? This incredible ability of living systems is known as self-organization. goal of \citeauthor{growing_nca} was to determine cell-level rules which simulate the behaviour of these biological systems. Like creating complex shapes  starting from a single cell, maintaining that shape and regenerating damaged parts of the system.
+The motivation for this NCA, like the MLP and CNN, is biologically motivated. In this case, cell morphology was the topic of interest. How do cells, using local information like the cells around them and chemical gradients 'know' what type of organ or tissue to become? This incredible ability of living systems is known as self-organization. goal of \citeauthor{growing_nca} was to determine cell-level rules which simulate the behavior of these biological systems. Like creating complex shapes  starting from a single cell, maintaining that shape and regenerating damaged parts of the system.
 
 
 \subsection{The Model}
-Now that we have some basic foundational knowledge about CA and CNN's, we can move on to the real NCA (or differentiable, self-organizing systems). As discussed in section \ref{ca-cnn}, a CNN can be seen as a type of CA, but utilizing a continuous state-space instead of a discrete one. We can also increase the amount of channels each cell has to an arbitrary number. In the paper, they found 12 hidden states to be a good number. As can be seen in (fig \ref{fig:nca}), this model can be thought of as a “Recurrent Residual Convolutional Network with ‘per-pixel’ Dropout”. The 'per-pixel dropout' refers to the stochastic updating of cells. We start from a single black pixel in the center of a blank image and run the model on it for a certain number of steps where the output of the model becomes the new input (i.e. recurrent).
+Now that we have some basic foundational knowledge about CA and CNN's, we can move on to the real NCA (or differentiable, self-organizing systems). As discussed in section \ref{ca-cnn}, a CNN can be seen as a type of CA, but utilizing a continuous state-space instead of a discrete one. We can also increase the amount of channels each cell has to an arbitrary number. In the paper, they found 12 hidden states to be a good number. As can be seen in (fig \ref{fig:nca}), this model can be thought of as a “Recurrent, Residual Convolutional Network with ‘per-pixel’ Dropout”. The 'per-pixel dropout' refers to the stochastic updating of cells, where only a certain percentage of cells are updated to the next time step. We start from a single black pixel in the center of a blank image and run the model on it over a number of steps where the output of the model increments the input the input (i.e. recurrent).
 \begin{figure}[h]
 	\includegraphics[width=1\textwidth]{../Figures/growing_nca.png}
 	\centering
@@ -184,7 +202,7 @@ Now that we have some basic foundational knowledge about CA and CNN's, we can mo
 \end{figure}
 
 \subsection{Training} \footnote{The paper outlines multiple experiments. Only the initial experiment titled "Experiment 1: Learning to Grow " will be covered.}
-We start from a single black pixel, iterate the model over $x$ time steps, then compare the final result of this model with the target image we are training the model. We then perform a per-pixel difference or MSE (equation \ref{eq:2.2}) Then based on this loss we use ADAM optimizer to back-propagate through time to adjust the weights of the model until the model learns to grow or morph into the target image (see Fig \ref{fig:nca-train}).
+We start from a single black pixel, iterate the model over $x$ time steps, then compare the final result of this model with the target image we are training the model. We then perform a per-pixel difference or MSE (equation \ref{eq:2.2}). Based on this loss, we use the ADAM optimizer to back-propagate through time and adjust the weights accordingly until the model learns to grow or morph into the target image (see Fig \ref{fig:nca-train}).
 	
 \begin{figure}[h]
 	\includegraphics[width=1\textwidth]{../Figures/training_nca.png}

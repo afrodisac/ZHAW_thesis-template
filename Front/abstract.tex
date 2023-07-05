@@ -6,13 +6,18 @@
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
  
-Floods are one of the most frequent and catastrophic natural disasters that occur in nature. In recent years, flooding has become a major concern in urban areas around the world. Extreme rainfall events are becoming more frequent, especially in areas where these unpredictable weather phenomenon have not occurred before and whose infrastructure was not built to accommodate these conditions. Due to the computational time and fine resolution spatial data required to accurately model flooding behavior, there is a strong need for accurate, rapid flood modeling techniques in order for prevention mechanisms to be put in place. \\
+Floods are one of the most frequent and catastrophic natural disasters that occur in nature. In recent years, flooding has become a major concern in urban areas around the world. Extreme rainfall events are becoming more frequent, especially in areas where these unpredictable weather phenomena have not occurred before and where infrastructure was not built to accommodate these conditions. Due to the computational time and fine resolution spatial data required to accurately model flooding behavior, there is a strong need for accurate, rapid flood modeling techniques in order for appropriate flood  mitigation mechanisms to be put in place. \\
 
-This thesis investigates the use of deep learning techniques, in particular neural cellular automata, in the application of flood modeling with three main objectives. Is the model able to outperform a heuristic as well as two benchmark models. Is the model able to generalize to different, unseen rainfall events, and finally is emergent behavior observed in the form of a recurrent water depth prediction over many time steps. \\
+This thesis investigates the use of deep learning techniques, in particular neural cellular automata (NCA), in the application of flood modeling with three main objectives:
+\begin{enumerate}
+	\item[i)] Evaluate NCA in the application of flood modeling 
+	\item[ii)] Is the model able to generalize to different rainfall events?
+	\item[iii)] After explicitly training the model to predict water depth for a single time step, is emergent behavior observed in the form of a recurrent water depth prediction over multiple time steps.
+\end{enumerate}
 
-Neural cellular automata are a type of self-organizing, differentiable system that tend to have lower parameter count than other deep learning models, and are more robust to noise than typical, deterministic cellular automata. Simulated data from a CADDIES flood model is used as training and testing data. The tensorflow python library is used as a convenient framework due to the similarities of neural cellular automata and convolutional neural networks. \\
+NCA are a type of self-organizing, differentiable system that tend to have lower parameter count than other deep learning models, and are more robust to noise than typical, deterministic cellular automata (CA). In this study, simulated data from a CADDIES flood model is used as training and testing data. The Tensorflow Python library is used as a convenient framework due to the similarities between NCA and convolutional neural networks (CNN). \\
 
-This thesis evaluates the models on a variety of training regimes and dataset constructions with different model architectures. Through careful evaluation, we find that models were able to outperform the heuristic and benchmark models. However, they failed to learn meaningful behaviors for the other two objectives. The models typically fall into a local minima immediately during training and predicted no change in water depth between time steps. Reasons for why this occurred is speculated on.
+This thesis evaluates two NCA inspired models using a variety of training regimes and dataset constructions with differing depths. Through careful evaluation, we find that models were able to outperform the heuristic and benchmark models. However, they failed to learn meaningful behaviors to fulfill objectives ii) and iii). The models typically fall into  local minima immediately during training and predict no change in water depth between time steps. After careful analysis of evaluation methods, a simple model is proposed that showed much better results in relation to Objective ii. Possible reasons for the shortcomings of the evaluation method are discussed.
 \end{abstract}
 
 

@@ -9,7 +9,7 @@
 
 \section{Data}
 
-The data was provided by [Eawag, institute of Aquatic Sciences]. It was generated using CADDIE2D software, which is described in Chapter \ref{Chapter3}. In the dataset, we look at four catchment areas around Switzerland, '26', '292', '709', '819' (see Fig \ref{fig:4.1}). They are named according to a DEM naming scheme all DEM's have a spatial resolution of 1. For each DEM, there are fourteen rainfall events (see \ref{fig:4.2}), for each rainfall event, there is a water depth  map for each time step (see Fig {fig:4.3}, which shows spatial evolution over time), rainfall event names, a mask to remove areas  outside the catchment area (if water were to propagate to this boundary, it would be considered run-off). Each time step represents 10 minutes of real time dynamics, but computational time of the CADDIES model varies.
+The data was provided by [Eawag, institute of Aquatic Sciences]. It was generated using CADDIE2D software, which is described in Chapter \ref{Chapter3}. In the dataset, we look at four catchment areas around Switzerland, '26', '292', '709', '819' (see Fig \ref{fig:4.1}). They are named according to a DEM naming scheme all DEM's have a spatial resolution of 1. For each DEM, there are fourteen rainfall events (see \ref{fig:4.2}). For each rainfall event, there is a water depth  map for each time step (see Fig \ref{fig:4.3}, which shows spatial evolution over time). The dataset provided also contains rainfall event names and  finally, a mask to remove areas outside the catchment area (if water were to propagate to this boundary, it would be considered run-off). Each time step represents 10 minutes of real time, but computational time of the CADDIES model varies for each time step computed.
 
 \begin{figure}[htbp]
 	\includegraphics[width=0.6\textwidth]{../Figures/Catchment_dems.png}
@@ -232,7 +232,7 @@ Three models are looked at. Shallow, Medium, and Complex models. Their model sum
 \end{verbatim}
 
 \subsubsection*{Inception Block Inspired}
-The last model looked at was an Inception Block Inspired model with  varying complexity (see Listing \ref{lst:4}) with an example configuration (see Listing \ref{lst:5})
+The last model looked at was an Inception Block Inspired model with  varying complexity (see Listing \ref{lst:4}) with an example configuration (see Listing \ref{lst:5}). The use of this architecture is motivated by the fact that very few features are used as input and the inception block architecture is enrich the feature space through the use of sub networks \cite{ding2021diverse}
 
 \begin{lstlisting}[language=Python, label={lst:4}]
 	

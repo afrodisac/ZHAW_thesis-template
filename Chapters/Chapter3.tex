@@ -12,11 +12,11 @@ There are many different approaches to tackle flood modeling. They include Rapid
 
 \subsection*{Rapid Flood Spreading} 
 
-Rapid Flood Spreading (RFS)\footnote{The RFS method description has been summarized from \citeauthor{liu2010new} \cite{liu2010new}}, as the name implies, is a simple model to rapidly predict inundation of the flood plain. It works by equalizing the water levels of cells within a local neighbourhood. There are two stages to this process: The pre-calculation and inundation routine. In the pre-calculation routine, low points are identified in the DEM and expanded outwards. In the inundation routine, water is distributed from the inflow source to neighbouring cells using a lowest neighbour principle.
+Rapid Flood Spreading (RFS)\footnote{The RFS method description has been summarized from \citeauthor{liu2010new} \cite{liu2010new}}, as the name implies, is a simple model to rapidly predict inundation of the flood plain. It works by equalizing the water levels of cells within a local neighborhood. There are two stages to this process: The pre-calculation and inundation routine. In the pre-calculation routine, low points are identified in the DEM and expanded outwards. In the inundation routine, water is distributed from the inflow source to neighboring cells using a lowest neighbor principle.
 
 	
 \subsection*{Two-Dimensional Surface}
-A 2D flood model represents the river network in a mesh, which provides information about the river topography and allows to define very precisely the topography of the floodplain. The hydraulics are solved using two-dimensional shallow  water equations: The continuity equation (Eq. \ref{eq:3.1}), and two-dimensional equations of motion (Eq. \ref{eq:3.2} and Eq. \ref{eq:3.3}) \cite{o1993two}.
+A 2D flood model represents the river network in a mesh, which provides information about the river topography and allows to define very precisely the topography of the floodplain. The hydraulics are solved using two-dimensional shallow  water equations: The continuity equation (Eq. \ref{eq:3.1}), and two-dimensional equations of motion \cite{o1993two} (Eq. \ref{eq:3.2} and Eq. \ref{eq:3.3}) .
 
 \begin{equation}
 	\label{eq:3.1}
@@ -32,7 +32,7 @@ A 2D flood model represents the river network in a mesh, which provides informat
 	\label{eq:3.3}
 	S_{fy} = S_{oy} - \frac{\partial h}{\partial y} - \frac{V_{y}}{g}\frac{\partial V_{y}}{\partial y} - \frac{V_{x}}{g}\frac{\partial V_{y}}{\partial x} - \frac{1}{g}\frac{\partial V_{x}}{\partial t} 
 \end{equation}
-% change the rest of the math 'where' to the following format:
+
 Where, $h$ is flow depth; $g$ is gravitational acceleration; $V_{x}$ and $V_{y}$ are the depth-averaged  velocity components along the $x$ and $y$ coordinates; The friction slope components $S_{fx}$ and $S_{fy}$ are a function of the bed slope $S_{ox}$ and $S_{oy}$, pressure gradient, convective and local acceleration terms. However, the diffusive wave approximation to this equation is defined by neglecting the latter three terms. \\
 2D surface models have the advantage of being able to model dynamics of the flood plain, duration and are very accurate.
  
@@ -59,7 +59,7 @@ Where $V$ is the cross-sectional average velocity (m/s); $R$ is the hydraulic ra
 
 WCA2D is based on the model by \citeauthor{Ghimire} but substitutes the ranking system with a weighted based system that simplifies the transition rules. This transition rule has four steps:
 \begin{enumerate}
-	\item Identify the downstream neighbour cells
+	\item Identify the downstream neighbor cells
 	\item Compute the specific weight of each downstream cell based on the available storage volume
 	\item Compute the total amount of volume that will leave the central cell
 	\item for each downstream cell, set the eventual intercellular-volume which depends on the previously computed weight and total amount of volume transferred.

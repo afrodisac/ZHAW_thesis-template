@@ -12,14 +12,14 @@
 
 This appendix was part of my work for track module 1 and may be helpful in understanding the updated paper.
 \section*{CA Approach}
-There are a few problems with conventional flood modeling techniques. 1D models give us limited information about flow dynamics and 2D models are extremely computationally taxing, which limits their use. Cellular automata (CA) could be implemented to remedy this problem by reducing the computational time and cost to run these models. The focus of this review will be primarily on the CA created by \cite{Ghimire} as the paper is very well laid-out and the CA used is well defined, albeit, complex. This CA uses regular grid cells as a discrete space for the CA setup and applies generic rules to local neighbourhood cells to simulate the progression of pluvial floods.
+There are a few problems with conventional flood modeling techniques. 1D models give us limited information about flow dynamics and 2D models are extremely computationally taxing, which limits their use. Cellular automata (CA) could be implemented to remedy this problem by reducing the computational time and cost to run these models. The focus of this review will be primarily on the CA created by \cite{Ghimire} as the paper is very well laid-out and the CA used is well defined, albeit, complex. This CA uses regular grid cells as a discrete space for the CA setup and applies generic rules to local neighborhood cells to simulate the progression of pluvial floods.
 
 \section*{CA Formulation by Ghimire, et al}
 
-This model consists of five essential features of a true cellular automation: discrete space; neighbourhood (NH); cell state; discrete time step; transition rule.
-The square grid digital elevation model (DEM) provides the discrete space for the CA set up. A DEM is just a representation of the bare ground (bare earth) topographic surface of the Earth which excludes trees, buildings, and any other surface objects \cite{DEM}. The NH used for this model consists of the central cell itself and its four cardinal adjacent cells (five cells in total). This is known as the von Neumann type NH. The Moore NH, consisting of eight surrounding cells and the central cell similar to the NH in John Conway’s Game of Life, is an alternative. 
+This model consists of five essential features of a true cellular automation: discrete space; neighborhood (NH); cell state; discrete time step; transition rule.
+The square grid digital elevation model (DEM) provides the discrete space for the CA set up. A DEM is just a representation of the bare ground (bare earth) topographic surface of the Earth which excludes trees, buildings, and any other surface objects. The NH used for this model consists of the central cell itself and its four cardinal adjacent cells (five cells in total). This is known as the von Neumann type NH. The Moore NH, consisting of eight surrounding cells and the central cell similar to the NH in John Conway’s Game of Life, is an alternative. 
 Precipitation occurs over the whole area of the terrain being considered. Movement of the water is mainly driven by the slopes between cells and limited by the transferrable volume and the hydraulic equations. The transferrable volume is the minimum of the total volume within the giving cell and the space available in the receiving cells. The transferrable volume is the minimum of the total volume within the giving cell and the space available in the receiving cells. Manning’s equation and the critical flow equation are applied to restrict the flow velocity. The assumption here is that water can only flow from one cell to its local NH, according to the hydraulic gradients in one computing time step. 
-In the calculation the NH cells are ranked according to the water level, as 1 for the cell with the lowest level and 5 for the highest one, to determine the direction of flow between cells. Only the outflow fluxes (Flux as flow rate per unit area) from the central cell to its neighbours with lower ranks are calculated. Any inflow to the cells under consideration is eventually calculated as the outflow from its neighbor that has a higher water level on the opposite of the cell interface.
+In the calculation the NH cells are ranked according to the water level, as 1 for the cell with the lowest level and 5 for the highest one, to determine the direction of flow between cells. Only the outflow fluxes (Flux as flow rate per unit area) from the central cell to its neighbors with lower ranks are calculated. Any inflow to the cells under consideration is eventually calculated as the outflow from its neighbor that has a higher water level on the opposite of the cell interface.
 The fluxes through the interfaces of the central cell are determined by the states of NH cells in previous time steps and stored as intermediate buffers for updating the states of cells. The states of flood depths of all cells are updated simultaneously when all interface fluxes are determined.
 
 \subsection*{Main Algorithm:}
@@ -31,7 +31,7 @@ Program start
 	\item Computation starts in the local NH \{
 	\begin{enumerate}
 		\item Ascending cell rankings based on the water surface elevations
-		\item Layer-wise claculation of outflows from central cell
+		\item Layer-wise calculation of outflows from central cell
 		\item Distribution of layer-wise fluxes within the NH
 		\item Calculate the cell interfacial velocities
 	\end{enumerate}
@@ -71,7 +71,7 @@ Where $\theta$ is a non-dimensional flow relaxation parameter that can take valu
 
 \subsection*{Time-Step Calculation}
 
-For most 2D hydraulic modelling, higher resolution DEM data are being used, the required time steps will be shorter to ensure the stability of model computations, which often leads to large computational burden, such that many studies have been focused on reducing the computational time of simulations. The time increment, determined as the largest that satisfies the stability criteria anywhere in the whole domain, implies that for most of the cells only a fraction of the locally allowable time steps is used to integrate the solution in time. This represents a waste of computational effort and limits the use of the method. A spatially varying time step can increase solution accuracy and reduce computer run time. In this implementation we use maximum permissible velocity which ensures the minimum time steps required to distribute the applied flux. The interfacial velocity v* is determined based on the flux transferred through a cell boundary given by:
+For most 2D hydraulic modeling, higher resolution DEM data are being used, the required time steps will be shorter to ensure the stability of model computations, which often leads to large computational burden, such that many studies have been focused on reducing the computational time of simulations. The time increment, determined as the largest that satisfies the stability criteria anywhere in the whole domain, implies that for most of the cells only a fraction of the locally allowable time steps is used to integrate the solution in time. This represents a waste of computational effort and limits the use of the method. A spatially varying time step can increase solution accuracy and reduce computer run time. In this implementation we use maximum permissible velocity which ensures the minimum time steps required to distribute the applied flux. The interfacial velocity v* is determined based on the flux transferred through a cell boundary given by:
 
 \begin{equation} \label {eq:4}
 	\Large v^{*} = \frac{F}{d^{*}\Delta{x}\Delta{t}}
@@ -82,7 +82,7 @@ Where, $ d*$ is the water depth of flow available at the interface, which is the
 	\Large d* = \text{max} \{WL_{C}, WL_{N}\} - \text{max}\{z_{C}, z_{N}\}
 \end{equation}
 
-Where, $WL$ and $z$ are the water levels and ground elevation respectively and the subscripts $C$ and $N$ represent central and neighbouring cells repectively
+Where, $WL$ and $z$ are the water levels and ground elevation respectively and the subscripts $C$ and $N$ represent central and neighboring cells respectively
 To prevent the velocity from over shooting, a cap on the local allowable velocity is applied as given by Equation \ref{eq:6} based on the Manning's formula and critical flow condition as:
 \begin{equation} \label{eq:6}
 	\Large v = \text{min}\{\frac{1}{n}R^{\frac{2}{3}}S^{\frac{1}{2}}, \sqrt{gd}\}
