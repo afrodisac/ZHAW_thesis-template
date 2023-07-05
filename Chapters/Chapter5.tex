@@ -26,7 +26,7 @@ The Initial dataset screen was done in order to evaluate the best DEM and normal
 	\label{fig:mean-dem-screening}
 \end{figure}
 
-Fig. \ref{fig:dem-screening} shows a box plot for all DEMS. It includes all the normalization strategies (see \ref{methods:inital-screening}). The model used is the DepthwiseCNN model (see \ref{DepthwiseCNN:init}) Fig. \ref{fig:mean-dem-screening} is a bar plot that shows the mean across all DEMs, normalization strategies, and loss functions (see loss functions defined \ref{training:loss}). This was the first test performed. It was done in order to determine which dataset to move forward with. Due to computational limitations and time required for training. Fig. \ref{fig:dem-screening} shows some interesting variation across the datasets. DEM 292 and 709 seemed to show the most promise, but the final decision was to move forward with DEM 292. When we look at the mean values (see Fig. \ref{fig:mean-dem-screening}), We see that DEM 292 has a slightly lower loss than DEM 709. This decision was relatively arbitrary, however, it did have the lowest loss model and showed the fewest outliers. Also the recurrent time step predictions were also the lowest.
+Fig. \ref{fig:dem-screening} shows a box plot for all DEMS. It includes all the normalization strategies (see \ref{methods:inital-screening}). The model used is the DepthwiseCNN model (see \ref{DepthwiseCNN:init}) Fig. \ref{fig:mean-dem-screening} is a bar plot that shows the mean across all DEMs, normalization strategies, and loss functions (see loss functions defined \ref{training:loss}). This was the first test performed and was done in order to determine which dataset to move forward with due to computational limitations and time required for training. Fig. \ref{fig:dem-screening} shows some interesting variation across the datasets. DEM 292 and 709 seemed to show the most promise, but the final decision was to move forward with DEM 292. When we look at the mean values (see Fig. \ref{fig:mean-dem-screening}), We see that DEM 292 has a slightly lower loss than DEM 709. This decision was relatively arbitrary, however, it did have the lowest loss model and showed the fewest outliers. Also the recurrent time step predictions were also the lowest.
 
 \subsubsection*{Normalization strategy}
 Fig. \ref{fig:norm-strat-292} shows the loss for each normalization strategy across loss functions. This was used to determine which normalization performed the best overall.
@@ -67,7 +67,7 @@ Where AUTO and MAN refer to the different regularization done on MSE and MAE. H 
 	\label{fig:loss-comparison-initial}
 \end{figure}
 
-Choosing the right loss function is a critical task for DL. The problems with classical MAE and MSE, which are essentially the only options for regression tasks like this (when dealing with two-dimensional, multi-channel tensors), in this case is their bias towards predicting 0 water depth. The nature of datasets like this, is its un balanced nature. Looking at the rainfall events (see Fig. \ref{fig:4.2} and \ref{fig:4.4}), we see there are many moments where there is very small or no rainfall. On top of that, the simulated data thresholds water depth. When water depth is less than 0.01 m, it outputs 0 (see Eq. \ref{eq:thresholdwd}).
+Choosing the right loss function is a critical task for DL. The problems with classical MAE and MSE, which are essentially the only options for regression tasks like this (when dealing with two-dimensional, multi-channel tensors), is the bias they introduce towards predicting 0 change in water depth. The nature of datasets like this, is its unbalanced nature. Looking at the rainfall events (see Fig. \ref{fig:4.2} and \ref{fig:4.4}), we see there are many moments where there is very small or no rainfall. On top of that, the simulated data thresholds water depth. When water depth is less than 0.01 m, it outputs 0 (see Eq. \ref{eq:thresholdwd}).
 
 \begin{equation}
 	\label{eq:thresholdwd}
@@ -77,7 +77,7 @@ Choosing the right loss function is a critical task for DL. The problems with cl
 	\end{cases}
 \end{equation}
 
-Table \ref{tab:loss-functions-dem} shows the loss's across models for each loss function variation across the independently normalized dataset for DEM 292 (see Fig \ref{fig:loss-comparison-initial}) We see that MSE loss doesn't generally perform as well as MAE. This might be because the metric chosen was mae, so there is potential for bias. Weights chosen for the  manual weighted loss functions were 0.8 zero weight and 0.2 non zero weight. This may seem counter intuitive to what is mentioned above but it still performed the best. This is because predicting 0 change in water depth outperformed the Heuristic. MSE and MSE AUTO variations performed the worst by a large margin. While manual MAE performed the best. Therefore, we move forward with this variation. This is an interesting finding because MSE is typically the preferred loss function for regression tasks \cite{jadon2022comprehensive}.  
+Table \ref{tab:loss-functions-dem} shows the loss across models for each loss function variation across the independently normalized dataset for DEM 292 (see Fig \ref{fig:loss-comparison-initial}) We see that MSE loss doesn't generally perform as well as MAE. This might be because the metric chosen was mae, so there is potential for an injected bias here. Weights chosen for the  Manual weighted loss functions were 0.8 zero weight and 0.2 non zero weight. This may seem counter intuitive to what is mentioned above but it still performed the best. This is because predicting 0 change in water depth outperformed the Heuristic. MSE and MSE AUTO variations performed the worst by a large margin. While Manual MAE performed the best. Therefore, the Manual MAE variation was chosen to for further investigation. This is an interesting finding because MSE is typically the preferred loss function for regression tasks \cite{jadon2022comprehensive}.  
 
 \section{Model Complexity and Hyperparameter tuning}
 
@@ -93,7 +93,7 @@ Two methods were evaluated. Models predicting water depth directly and models pr
 Fig \ref{fig:diffvsnodiff} shows that models trained to predict water depth directly have much more variability. Loss  for predicting a single time step has more outliers and performs worse on average than predicting the difference in water depth. However, it seems that recurrent time step prediction performs better. Only models that predict difference in water depth over a single time step perform better than the heuristic. Based on these results, further evaluation is only based on predicting difference in water depth.
 
 \subsubsection*{Model Complexity, Predicting Difference in Water Depth}
-Fig. \ref{fig:depthwise-complexity} shows the loss of different model complexities across epochs and learning rates. The shallow DepthwiseCNN model seems to show the best results. All model complexities out-perform the heuristic. Unfortunately, whilst generating data and deciding which models to do further testing on, only the best models were considered. In this case, the best performing model was a medium complexity model (see 5th row of Table \ref{tab:best_ss}). So further work was done on the medium complexity model. Further testing should be done on a simpler model, especially where the recurrent (and most useful) loss is concerned. 
+Fig. \ref{fig:depthwise-complexity} shows the loss of different model complexities across epochs and learning rates. The shallow DepthwiseCNN model seems to show the best results. All model complexities out-perform the heuristic. Unfortunately, whilst generating data and deciding which models to do further testing on, only the best models were considered. In this case, the best performing model was a medium complexity model (see 5th row of Table \ref{tab:best_ss}). So further work was done on the medium complexity model. Further testing should be done on a simpler model \footnote{see section \ref{Extra} for a small further look into a simpler model and it the benefits it showed}, especially where the recurrent (and most useful) loss is concerned. 
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.7\linewidth, height=0.4\textheight]{Figures/Results/Diff_Complexity_Lr_Epochs/Complexity/Box_model_complexity}
@@ -103,7 +103,7 @@ Fig. \ref{fig:depthwise-complexity} shows the loss of different model complexiti
 
 
 \subsubsection*{Epochs and Learning Rate for Medium Complexity DepthwiseCNN}
-Fig \ref{fig:epochs} shows the model loss for the medium complexity DepthwiseCNN. This is across a variety of learning rates, which are shown in Table \ref{tab:lr}. There was very little difference between the epochs. A reason for this might be due to the stop loss callback option used during training. Overall, across all testing, models struggled to learn anything. A reason for this may be due to being trapped in a local minima from the start. If the model was predicting no change, the loss was very low and even outperformed the heuristic. Fig \ref{fig:egloss-epochs} shows an example loss across all models (benchmark and DepthwiseCNN model). Where m is the model, b1, is benchmark 1 and b2 is benchmark 2. The reason for the large difference in loss is due to the type of loss functions employed. The benchmark models were always trained using standard MAE and default learning rate of 1e-3. The custom loss functions used for training the model of interest always increased the loss by 1000 times. The motivation for this was it would be easier to for the model to learn from a larger loss than a tiny loss.
+Fig \ref{fig:epochs} shows the model loss for the medium complexity DepthwiseCNN. This is across a variety of learning rates, which are shown in Table \ref{tab:lr}. There was very little difference between the epochs. A reason for this might be due to the stop loss callback option used during training. Overall, across all testing, models struggled to learn anything. A reason for this may be due to being trapped in local minima from the start. If the model was predicting no change, the loss was very low and even outperformed the heuristic. Fig \ref{fig:egloss-epochs} shows an example loss across all models (benchmark and DepthwiseCNN model). Where m is the model, b1, is benchmark 1 and b2 is benchmark 2. The reason for the large difference in loss is due to the type of loss functions employed. The benchmark models were always trained using standard MAE and default learning rate of 1e-3. The custom loss functions used for training the model of interest always increased the loss by 1000 times. The motivation for this was it would be easier to for the model to learn from a larger loss than a tiny loss.
 
 \begin{figure}[tbph]
 	\centering
@@ -139,7 +139,7 @@ From Table \ref{tab:lr}, the different learning rates had little effect on model
 \end{table}
 
 \subsubsection*{Optimal Weights for MAE}
-Table \ref{tab:weights} shows the loss for different weights for the manual MAE loss function. (see Fig. \ref{fig:MAE-weights-init} for a visual representation). 
+Table \ref{tab:weights} shows the loss for different weights for the Manual MAE loss function. (see Fig. \ref{fig:MAE-weights-init} for a visual representation). 
 \begin{figure}[tbph]
 	\centering
 	\includegraphics[width=0.9\linewidth, height=0.5\textheight]{Figures/Results/Shuffle_Weights/weights/weights}
@@ -166,7 +166,7 @@ Table \ref{tab:weights} shows the loss for different weights for the manual MAE 
 \end{table}
 Where the name indicates zero weight and non zero weight respectively. (eg. zero weight of 0.9 and non zero weight of 0.1, i.e. 0.9|0.1). \\
 
-Since the manual MAE loss function performed the best. The correct weight ratio was searched for. In Table \ref{tab:weights}, we see no meaningful difference (at most 0.000006 difference between weights.) This is a surprising result but as can be seen in Fig \ref{fig:egloss-epochs} models struggle to learn in general. manual MAE with weighting of 0.5 | 0.5 was used for the rest of the evaluations unless otherwise specified.
+Since the Manual MAE loss function performed the best. The correct weight ratio was searched for. In Table \ref{tab:weights}, we see no meaningful difference (at most 0.000006 difference between weights.) This is a surprising result but as can be seen in Fig \ref{fig:egloss-epochs} models struggle to learn in general. Manual MAE with weighting of 0.5 | 0.5 was used for the rest of the evaluations unless otherwise specified.
 
 \subsubsection*{Shuffling the Data}]
 Table \ref{tab:suffle} shows the results of shuffling the data using the function 'train \_ test \_ split()' from the python library sklearn with kwarg** shuffle=True. There was no meaningful difference between shuffling the data or not.
@@ -224,7 +224,7 @@ And the second number indicates the learning rate,
 	\item  1e-3
 	\item  1e-4
 \end{enumerate}
-For example [w11] from Table \ref{tab:weighte_lr} is the weight ratio of 0.5 zero weight and 0.5 non zero weight, with a learning rate of 1e-2. Here we see that such a high learning rate negatively impacts models and reaffirms that the weights had little impact except in the case of [w21] which performed much worst than the rest in terms of loss. One "success" was for a different weighting scheme but was not able to be reproduced  can be seen in Fig \ref{fig:random-success}. The it was trained on the original, independently normalized dataset, with a learning rate of 1e-4, using the manual weighted MAE loss function with weights 0.1 | 0.9.
+For example [w11] from Table \ref{tab:weighte_lr} is the weight ratio of 0.5 zero weight and 0.5 non zero weight, with a learning rate of 1e-2. Here we see that such a high learning rate negatively impacts models and reaffirms that the weights had little impact except in the case of [w21] which performed much worst than the rest in terms of loss. One "success" was for a different weighting scheme but was not able to be reproduced  can be seen in Fig \ref{fig:random-success}. The it was trained on the original, independently normalized dataset, with a learning rate of 1e-4, using the Manual MAE loss function with weights 0.1 | 0.9.
 
 \begin{figure}[tbph]
 	\centering
@@ -233,20 +233,21 @@ For example [w11] from Table \ref{tab:weighte_lr} is the weight ratio of 0.5 zer
 	\label{fig:random-success}
 \end{figure}
 
-This figure at least shows the model was able to learn a non-linear recurrent  prediction and shows some glimmer of hope that a DL model could be capable of learning flood modeling.
+This figure shows the ability of the model to learn a non-linear recurrent  prediction, which was not seen prior, and provides some glimmer of hope that a DL model is capable of learning flood modeling.
 
 
 \section{Inception Inspired Model}
 In this section, column names are w1, w2, w3, They represent the following training regime,
 \begin{enumerate}
-	\item[w1] 20 Epochs, learning rate of 1e-2, manual MAE with zero weight 0,2 and non zero weight of 0,8
-	\item[w2] 20 Epochs, learning rate of 1e-3, manual MAE with zero weight 0,2 and non zero weight of 0,8
-	\item[w3] 20 Epochs, learning rate of 1e-3, manual MAE with zero weight 0,1 and non zero weight of 0,9
+	\item[w1] 20 Epochs, learning rate of 1e-2, Manual MAE with zero weight 0,2 and non zero weight of 0,8
+	\item[w2] 20 Epochs, learning rate of 1e-3, Manual MAE with zero weight 0,2 and non zero weight of 0,8
+	\item[w3] 20 Epochs, learning rate of 1e-3, Manual MAE with zero weight 0,1 and non zero weight of 0,9
 \end{enumerate}
 
-The motivation for using this model is it's ability to generate it's own feature maps using a variety techniques and then concatenating the results, which is then fed into into another sequential layer. overall the results are quite similar to the DepthwiseCNN models but did perform slightly better.
+The motivation for using this model is it's ability to generate it's own feature maps using a variety techniques and then concatenating the results, which is then fed into into another sequential layer. Overall the results are quite similar to the DepthwiseCNN models but did perform, albeit, slightly better.
+
 \subsubsection*{Training Across Different Feature Datasets}
-Fig. \ref{fig:incep-normaldset}, \ref{fig:incep-rfdset}, \ref{fig:incep-maskdset} are the plots showing the losses of two different model complexities, simple and medium, across varying learning rates and weights for the manual MAE (see above). The models performed the best on the independently normalized dataset, as with the DepthwiseCNN model from the previous section. However, it seems that the masked dataset showed  less variability for recurrent predictions. Fig. \ref{fig:eg-simpincep} shows that the simple complexity Inception Inspired model also manages to learn something for recurrent predictions.
+Fig. \ref{fig:incep-normaldset}, \ref{fig:incep-rfdset}, \ref{fig:incep-maskdset} are the plots showing the losses of two different model complexities, simple and medium, across varying learning rates and weights for the Manual MAE (see above). The models performed the best on the independently normalized dataset, as with the DepthwiseCNN model from the previous section. However, it seems that the masked dataset showed  less variability for recurrent predictions. Fig. \ref{fig:eg-simpincep} shows that the simple complexity Inception Inspired model also manages to learn something for recurrent predictions.
 
 
 \begin{figure}[tbph]
@@ -280,7 +281,7 @@ Fig. \ref{fig:incep-normaldset}, \ref{fig:incep-rfdset}, \ref{fig:incep-maskdset
 
 
 \subsubsection*{Simple model}
-Table \ref{tab:simple_normal} shows that the different training regimes don't have meaningful impact on results. An example loss can be seen in Fig \ref{fig:simple-incep-loss}. Where the results from training are very reminscent of the DepthwiseCNN architecture. 
+Table \ref{tab:simple_normal} shows that the different training regimes don't have meaningful impact on results. An example loss can be seen in Fig \ref{fig:simple-incep-loss}, where the results from training are very reminiscent of the DepthwiseCNN architecture. 
 \begin{table}[htbp]
 	\centering
 	\caption{Three training configurations on the normal dataset for simple inception based model}
@@ -385,7 +386,7 @@ The Medium complexity model increases parameter count dramatically. The results 
 
 From Tables \ref{tab:medium_normal}, \ref{tab:medium_rf}, \ref{tab:medium_mask}, The results for the masked and normal datasets are similar but best results are still seen in the original independent dataset. Although the medium complexity Inception Inspired model outperforms the simple version, the increased parameter count and time needed to train also needs to be considered in future evaluations. In the below section, results across all training of all models are compared. \\
 
-\section{Final Results Overall}
+\section{Final Results}
 \begin{table}[htbp]
 	\centering
 	\caption{The Top Five Models Across all Training SS}
@@ -404,11 +405,11 @@ From Tables \ref{tab:medium_normal}, \ref{tab:medium_rf}, \ref{tab:medium_mask},
 \end{table}
 Table \ref{tab:best_ss} shows the top performing models for predicting a single time step (SS) ahead, overall across all testing. The Name column has the following keys,
 \begin{enumerate}
-	\item Medium Complexity Inception Inspired Model on the normalized dataset with the original three features. Trained with 20 Epochs, a learning rate of 1e-3, manual MAE loss with zero weighting of 0,2 and non zero weighting 0,8.
-	\item Simple Complexity Inception Inspired Model on the normalized dataset. Trained with 20 Epochs, a learning rate of 1e-3, manual MAE loss with zero weighting of 0,1 and non zero weighting 0,9.
-	\item Medium Complexity Inception Inspired Model on the normalized dataset with an additional mask feature. Trained with 20 Epochs, a learning rate of 1e-3, manual MAE loss with zero weighting of 0,2 and non zero weighting 0,8.
-	\item Medium Complexity Inception Inspired Model on the normalized dataset with the original three features. Trained with 20 Epochs, a learning rate of 1e-3, manual MAE loss with zero weighting of 0,1 and non zero weighting 0,9.
-	\item Medium complexity DepthwiseCNN model on the normalized dataset with original features. Trained with 8 Epochs,a learning rate of 1e-4, manual MAE lsos with zero weighting of 0,5 and non zero weighting of 0,5.
+	\item Medium Complexity Inception Inspired Model on the normalized dataset with the original three features. Trained with 20 Epochs, a learning rate of 1e-3, Manual MAE loss with zero weighting of 0,2 and non zero weighting 0,8.
+	\item Simple Complexity Inception Inspired Model on the normalized dataset. Trained with 20 Epochs, a learning rate of 1e-3, Manual MAE loss with zero weighting of 0,1 and non zero weighting 0,9.
+	\item Medium Complexity Inception Inspired Model on the normalized dataset with an additional mask feature. Trained with 20 Epochs, a learning rate of 1e-3, Manual MAE loss with zero weighting of 0,2 and non zero weighting 0,8.
+	\item Medium Complexity Inception Inspired Model on the normalized dataset with the original three features. Trained with 20 Epochs, a learning rate of 1e-3, Manual MAE loss with zero weighting of 0,1 and non zero weighting 0,9.
+	\item Medium complexity DepthwiseCNN model on the normalized dataset with original features. Trained with 8 Epochs,a learning rate of 1e-4, Manual MAE loss with zero weighting of 0,5 and non zero weighting of 0,5.
 \end{enumerate}
 
 \begin{table}[htbp]
@@ -430,8 +431,8 @@ Table \ref{tab:best_ss} shows the top performing models for predicting a single 
 Table \ref{tab:best_r} shows the top five models based on recurrent water depth prediction across all training. The name column has the following key-value pairs,
 \begin{enumerate}
 	\item Medium Complexity DepthwiseCNN model predicting water depth directly. Trained on the normalized dataset with 10 epochs, a learning rate of 1e-4. 
-	\item Simple Complexity Inception Inspired model the normalized dataset with the added mask feature. Trained with 20 Epochs, a learning rate of 1e-3, manual MAE loss with zero weighting of 0,1 and non zero weighting 0,9.
-	\item Medium Complexity Inception Inspired Model on the normalized dataset with the  added mask feature, predicting difference in water depth. Trained with 20 Epochs, a learning rate of 1e-3, manual MAE loss with zero weighting of 0,2 and non zero weighting 0,8.
+	\item Simple Complexity Inception Inspired model the normalized dataset with the added mask feature. Trained with 20 Epochs, a learning rate of 1e-3, Manual MAE loss with zero weighting of 0,1 and non zero weighting 0,9.
+	\item Medium Complexity Inception Inspired Model on the normalized dataset with the  added mask feature, predicting difference in water depth. Trained with 20 Epochs, a learning rate of 1e-3, Manual MAE loss with zero weighting of 0,2 and non zero weighting 0,8.
 	\item Medium Complexity DepthwiseCNN model predicting water depth directly. Trained on the normalized dataset with 2 epochs, a learning rate of 1e-4.
 	\item Medium Complexity DepthwiseCNN model predicting the difference in  water depth. Trained on the normalized dataset with 10 epochs, a learning rate of 1e-4.
 \end{enumerate}
@@ -456,9 +457,9 @@ Table \ref{tab:best_r} shows the top five models based on recurrent water depth 
 Table \ref{tab:worstss} shows the worst five performing models for predicting a single time step (SS) ahead, overall across all testing. The Name column has the following keys,
 \begin{enumerate}
 	\item Inital Depthwise Model using classic MSE on the DEM 26 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3.
-	\item Inital Depthwise Model using manual MSE on the DEM 26 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3. zero weight of 0.8 and non zero weight of 0.2.
+	\item Inital Depthwise Model using Manual MSE on the DEM 26 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3. zero weight of 0.8 and non zero weight of 0.2.
 	\item Inital Depthwise Model using classic MSE on the DEM 819 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3.
-	\item Inital Depthwise Model using  manual MSE on the DEM 819 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3. zero weight of 0.8 and non zero weight of 0.2.
+	\item Inital Depthwise Model using  Manual MSE on the DEM 819 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3. zero weight of 0.8 and non zero weight of 0.2.
 	\item Inital Depthwise Model using  auto MSE on the DEM 819 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3.
 \end{enumerate}
 
@@ -483,13 +484,13 @@ Table \ref{tab:worstss} shows the worst five performing models for predicting a 
 Table \ref{tab:worstr} shows the worst five performing models for predicting recurrent time steps ahead, overall across all testing. The Name column has the following keys,
 \begin{enumerate}
 	\item Inital Depthwise Model using classic MSE on the DEM 26 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3.
-	\item Inital Depthwise Model using manual MSE on the DEM 26 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3. zero weight of 0.8 and non zero weight of 0.2.
+	\item Inital Depthwise Model using Manual MSE on the DEM 26 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3. zero weight of 0.8 and non zero weight of 0.2.
 	\item Inital Depthwise Model using classic MSE on the DEM 819 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3.
 	\item Inital Depthwise Model using  auto MAE on the DEM 292 dataset where everything was min max normalized using the DEM. Trained using 2 Epochs, default learning rate of 1e-3.
 	\item Inital Depthwise Model using  auto MSE on the DEM 819 dataset where features are normalized independently. Trained using 2 Epochs, default learning rate of 1e-3.
 \end{enumerate}
 
-The following plots where created after all initial testing to try and reproduce the models. Fig. \ref{fig:BRMR} Shows the water depths the true values, heuristic model, and deep learning model of a random cell in the test set using a recurrent time step method prediction. The model used was the best performing model for a single time step prediction.  (see Table. \ref{tab:best_r}). Fig. \ref{fig:BRMS} Shows the same plot but predicting a single time step ahead. Fig. \ref{fig:BSMR} and \ref{fig:BSMS} Are the plots respectively but using the best single time step model (see Table. \ref{tab:best_ss}).
+The following plots where created after all initial testing to try and reproduce the models. Fig. \ref{fig:BRMR} shows the water depths of the true values, heuristic model output, and deep learning model predictions of a random cell in the test set using a recurrent time step method prediction. The model used was the best performing model for a single time step prediction.  (see Table. \ref{tab:best_r}). Fig. \ref{fig:BRMS} shows the same plot but predicting a single time step ahead. Fig. \ref{fig:BSMR} and \ref{fig:BSMS} are the plots respectively but using the best single time step model (see Table. \ref{tab:best_ss}).
 
 \begin{figure}[tbph]
 	\centering
@@ -522,7 +523,7 @@ The following plots where created after all initial testing to try and reproduce
 	\label{fig:BSMS}
 \end{figure}
 
-Fig. \ref{fig:SpatialTrue} Shows the spatial evolution of water depth on the test set and is used for comparison. Fig. \ref{fig:BMS-spatial} shows the best model from Table \ref{best:ss} and its spatial evolution of water depth over the test set. Fig. \ref{fig:adjusted-spatial} shows the spatial evolution of water depth on the test set using recurrent predictions. All other models predicted 0. This model is a slightly adjusted model, trained on lower epochs (2) and adjusting MAE weighting to 0.5 | 0.5. Fig. \ref{fig:adjusted-recurrent-rc} shows the recurrent preditions of a collection of random cells across the test set.
+Fig. \ref{fig:SpatialTrue} shows the spatial evolution of water depth on the test set and is used for comparison. Fig. \ref{fig:BMS-spatial} shows the best model from Table \ref{tab:best_ss} and its spatial evolution of water depth over the test set. Fig. \ref{fig:adjusted-spatial} shows the spatial evolution of water depth on the test set using recurrent predictions. All other models predicted 0. This model is a slightly adjusted model, trained on lower epochs (2) and adjusting MAE weighting to 0.5 | 0.5. Fig. \ref{fig:adjusted-recurrent-rc} shows the recurrent preditions of a collection of random cells across the test set.
 
 \begin{figure}[tbph]
 	\centering
@@ -555,22 +556,21 @@ Fig. \ref{fig:SpatialTrue} Shows the spatial evolution of water depth on the tes
 	\label{fig:adjusted-recurrent-rc}
 \end{figure}
 
-In terms of the Objectives of this thesis. At least for the experiments conducted, NCA have failed to produce meaningful results in flood modeling. The models were unable to accurately learn the training data, let alone generalize to the other rainfall patterns. And finally, although there some glimmers of hope regarding recurrent predictions (but reproducible with the remaining time for this thesis), ultimately the emergent properties alluded the author.
 
 \section{Limitations}
 Although the vast majority of models outperformed the benchmark models and heuristic, they were unable to recurrently predict water depths across time points. Even single time step prediction was only predicting no change in water depth despite trying to account for this in the loss functions. There are many reasons for this which are outlined here,
 \begin{enumerate}[align=left]
-	\item[Normalization Strategy: ]  Only three normalization techniques were tested. This was a a very difficult problem to tackle due to the range within features. Perhaps the way normalization was done, hindered the models ability to learn
-	\item[Computational Limitations: ] Training data had to be sub sampled. Since time steps were 10 minute intervals and the DEM has a spatial resolution of 1 m, water is able to propagate many cells downstream. When sub sampling is used, the model does not have access to this information. Which may have resulted in the models' being unable to learn correctly. This sub sampling technique also makes padding more of an issue. How is the model meant to know whether the data is outside a catchment area or whether it is just zero padding? It may be unable to determine this information. Or if a sub sample of data is upstream or downstream of another subsample.
+	\item[Normalization Strategy: ]  Only three normalization techniques were tested. This was a very difficult problem to tackle due to the range within features. Perhaps the way normalization was done, hindered the models ability to learn
+	\item[Computational Limitations: ] Training data had to be sub sampled. Since time steps were 10 minute intervals and the DEM has a spatial resolution of 1 m, water is able to propagate many cells downstream in a single time step. Outside of the local neighborhood. When sub sampling is used, the model does not have access to this information. Which may have resulted in the models' being unable to learn correctly. This sub sampling technique also makes padding more of an issue. How is the model meant to know whether the data is outside a catchment area or whether it is just zero padding? It may be unable to determine this information. Or if a sub sample of data is upstream or downstream of another subsample. All of this is potentially useful information that the model may not have had access to due to computational constraints.
 	\item[Loss Function and Metric: ] Perhaps the metric of evaluation could be improved. MAE error across the whole dataset may prioritize the model to predict no change as many of the cells are 0 from the simulated data. 
-	\item[Un-Balanced Data: ] The rainfall patterns are quite strange and most of the rainfall occurs in small time windows. Therefore most time steps have 0 water depth. This means predicting 0 water depth results in a very low loss
+	\item[Unbalanced Data: ] The rainfall patterns are quite strange and most of the rainfall occurs in small time windows. Therefore most cells, at most time steps have 0 water depth. This means predicting 0 water depth results in a very low loss and the model easily recognizes this fact.
 	\item[Single Time Step Prediction: ] A problem with this approach is not practically useful unless emergent properties like recurrent predictions are obtained which was not the case in this evaluation.
-	\item[Evaluation: ] Metric had a fatal flaw and all testing done ultimately drove the model to predict no change in water depth. Even picking DEM 292 and the test set with 2 spikes in rain fall (see DEM 292 in Fig. \ref{fig:4.4}). Future work should consider each training outcome in a case by case manner.
+	\item[Evaluation: ] Metric had a fatal flaw and all testing done ultimately drove the model to predict no change in water depth. Even picking DEM 292 and the test set with 2 short spikes in rain fall (see DEM 292 in Fig. \ref{fig:4.4}). Future work should consider each training outcome in a case by case manner with far more careful evaluation to what the model is doing. A small experiment was performed in Section \ref{Extra} to highlight this.
 \end{enumerate}
 
 \section{Extras}
 \label{Extra}
-This section some further testing was done and some optimistic results are shown after discovering the flaw in the above evaluations. A much simpler model was evaluated:
+This section provides results from further testing that was done after the initial write up. Some optimistic results are presented after discovering the evaluation methods above were driving the model to predict zero change in water depth. The model used for this evaluation is as follows:
 
 \begin{lstlisting}[language=Python]
 	class SimpleCNN(tf.keras.Model):
@@ -646,4 +646,4 @@ We see that very few parameters are contained in this model. In this case, only 
 \end{figure}
 
 
-It is very  interesting to see that the recurrent predictions essentially are predicting the DEM map itself (see Fig \ref{fig:recurrentpredictionscomparedem}), or at  least its shape. This may be due to a bug of some kind but is interesting to see. Whereas the true values seem to be nothing like that (see Fig. \ref{fig:recurrenttargetscomparedem}). From Fig. \ref{fig:extrasinglestep} and \ref{fig:extrarecurrentstep} we see much more promising results than mentioned previously. These results were obtained using more training (50 epochs) and a learning rate of 0.001 with reduced learning rate as a call back. These results provide some hope that it is possible to model flooding behaviors with NCA. We can also see the similarities more visually between Fig \ref{fig:sspredictionscomparedem} and \ref{fig:recurrenttargetscomparedem}. Time step 19 between them you can see a slight difference where the model predicted a higher water depth for a single cell. Also the emergent properties seen in the recurrent time step predictions are also interesting, since the model was not explicitly trained to predict recurrently!
+It is very  interesting to see that the recurrent predictions essentially are predicting the DEM map itself (see Fig \ref{fig:recurrentpredictionscomparedem}), or at  least its shape. This may be due to a bug of some kind but is interesting to see. Whereas the true values seem to be nothing like that (see Fig. \ref{fig:recurrenttargetscomparedem}). From Fig. \ref{fig:extrasinglestep} and \ref{fig:extrarecurrentstep} we see much more promising results than mentioned previously. These results were obtained using more training (50 epochs) and a learning rate of 0.001 with reduced learning rate as a call back. These results provide some hope that it is possible to model flooding behaviors with NCA. We can also see the similarities more visually between Fig \ref{fig:sspredictionscomparedem} and \ref{fig:recurrenttargetscomparedem}. Time step 19 shows a slight difference in water depth, where the model predicted a higher water depth for a single cell. The emergent properties seen in the recurrent time step predictions are also interesting, since the model was not explicitly trained to predict recurrently! The results for recurrent predictions are poor, however there are positive signs that it is possible but further evaluation and testing will be required.

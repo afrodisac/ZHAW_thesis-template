@@ -12,7 +12,7 @@ There are many different approaches to tackle flood modeling. They include Rapid
 
 \subsection*{Rapid Flood Spreading} 
 
-Rapid Flood Spreading (RFS)\footnote{The RFS method description has been summarized from \citeauthor{liu2010new} \cite{liu2010new}}, as the name implies, is a simple model to rapidly predict inundation of the flood plain. It works by equalizing the water levels of cells within a local neighborhood. There are two stages to this process: The pre-calculation and inundation routine. In the pre-calculation routine, low points are identified in the DEM and expanded outwards. In the inundation routine, water is distributed from the inflow source to neighboring cells using a lowest neighbor principle.
+Rapid Flood Spreading (RFS)\footnote{The RFS method description has been summarized from \citeauthor{liu2010new} \cite{liu2010new}}, as the name implies, is a simple model to rapidly predict inundation of the flood plain. It works by equalizing the water levels of cells within a local neighborhood. There are two stages to this process:  The first is the pre-calculation, where low points are identified in the DEM and expanded outwards. Secondly, the inundation routine, water is distributed from the inflow source to neighboring cells using a lowest neighbor principle.
 
 	
 \subsection*{Two-Dimensional Surface}
@@ -37,10 +37,10 @@ Where, $h$ is flow depth; $g$ is gravitational acceleration; $V_{x}$ and $V_{y}$
 2D surface models have the advantage of being able to model dynamics of the flood plain, duration and are very accurate.
  
 \subsection*{The Problem With Classical Approaches}
-RFS is an extremely fast modeling scheme but comes with some major drawbacks. The can only show the final state of inundation and does not describe information about the flood. 2D surface models require fine resolution data and extremely computationally demanding. They can take hours to run and are only able to model small areas. Both of these methods have rather large drawbacks. Especially when unpredictable rainfall events occur and rapid modeling of a flood plain is required to prevent catastrophe. 
+RFS is an extremely fast modeling scheme but comes with some major drawbacks. They can only show the final state of inundation and does not describe information about the flood. 2D surface models require fine resolution data and are extremely computationally demanding. They can take hours to run and are only able to model small areas. Both of these methods have rather large drawbacks. Especially when unpredictable rainfall events occur and rapid modeling of a flood plain is required to prevent catastrophe. 
 
 \section{The CA Approach}
-\label(WCA2D)
+\label{WCA2D}
 The advantage of employing CA for flood modeling is its simplicity \cite{Wolfram2002} and computational speed. It has the advantage of utilizing local functions for computation. Older 2D CA models, although much faster than solving complete shallow water equations still had to solve complicated, computationally demanding equations like Manning's equation (Eq. \ref{eq:manning}).
 
 \subsection*{The Weighted Cellular Automata}
@@ -62,7 +62,7 @@ WCA2D is based on the model by \citeauthor{Ghimire} but substitutes the ranking 
 	\item Identify the downstream neighbor cells
 	\item Compute the specific weight of each downstream cell based on the available storage volume
 	\item Compute the total amount of volume that will leave the central cell
-	\item for each downstream cell, set the eventual intercellular-volume which depends on the previously computed weight and total amount of volume transferred.
+	\item For each downstream cell, set the eventual intercellular-volume which depends on the previously computed weight and total amount of volume transferred.
 \end{enumerate}
 
 Overall the WCA2D model improves performance on the CA2D model but sacrifices some accuracy.

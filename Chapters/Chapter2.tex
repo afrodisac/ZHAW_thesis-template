@@ -67,7 +67,7 @@ By applying these rules iteratively, the Game of Life evolves and creates variou
 
 
 \subsection{Why are they useful?}
-In the above section, although beautiful and impressive, the examples are not practical. But the same motivation and methods can be extrapolated to model physical or biological systems. For example, many differentiable equations that can be discretized in time and space can be modeled using CA. Many examples have been demonstrated over the years. In the following Chapter \ref{Chapter3}, the CADDIE model is discussed in detail. But other examples include: particle simulation, chemical reactions, fire modeling, human and animal dynamics \cite{karafyllidis1997model, kier2005modeling, wolf2004lattice, alizadeh2011dynamic} to name a few.
+In the above section, although beautiful and impressive, the examples are not practical. But the same motivation and methods can be extrapolated to model physical or biological systems. For example, many differentiable equations that can be discretized in time and space can be modeled using CA. Many examples have been demonstrated over the years. In the following Chapter \ref{Chapter3}, the CADDIE model is discussed in detail. Other examples of practical CA include: particle simulation, chemical reactions, fire modeling, human and animal dynamics \cite{karafyllidis1997model, kier2005modeling, wolf2004lattice, alizadeh2011dynamic} to name a few.
 
 \section{Deep Learning}
 \subsection{What Is Deep Learning}
@@ -95,7 +95,7 @@ Deep learning (DL) is a subset of techniques within a class of algorithms known 
  	W &  \text{ is the weight vector} \\
  	B &  \text{ Bias}
  \end{align*}
- Where Edges are weights and nodes are the sum of the weights *inputs + bias. An activation function like sigmoid or ReLu (which performs a kind of smooth mapping) is applied to this sum. What you might you might in the above equation is its similarity with the straight line function: $y = mx + c$. It indicates that a single neuron can learn to class a binary problem as long as it is linearly separable!. \\
+ Where Edges are weights and nodes are the sum of the weights *inputs + bias. An activation function like sigmoid or ReLu (which performs a kind of smooth mapping) is applied to this sum. What you might in the above equation is its similarity with the straight line function: $y = mx + c$. It indicates that a single neuron can learn to class a binary problem as long as it is linearly separable!. \\
  
  \subsubsection*{Categories of Deep Learning}
  There are three main categories of deep learning: Supervised learning, Unsupervised learning, and reinforcement learning. \cite{alzubaidi2021review}. And within these three categories there are many different techniques. This thesis only considers the convolutional neural network, which is a type of supervised learning technique / architecture. 
@@ -113,7 +113,7 @@ An example of a typical CNN architecture can be seen in figure \ref{CNN:componen
 		\item[1:] Max Pooling. This applies a convolution that extracts the maximum value from the neighbourhood.
 		\item[2:] Average Pooling. This applies a convolution and takes the average of the neighbourhood.
 	\end{enumerate}
-	\item[1x1 Convolutional layer:] This layer is very similar to a fully connected layer. It is used for dimensionality reduction or promotion. One can think of this as mini neural network for each pixel \ element of the previous layers output. The output of a 1x1xD convolution will have the same spatial resolution as the input into this layer with D channels.
+	\item[1x1 Convolutional layer:] This layer is very similar to a fully connected layer. It is used for dimensionality reduction or promotion. One can think of this as miniature neural network for each pixel \ element of the previous layers output. The output of a 1x1xD convolution will have the same spatial resolution as the input into this layer with D channels.
 	\item[Fully Connected Layer:] This layer is just a typical MLP and is often used as the output layer for classification tasks. It works by connecting each element of the previous layer to each output node.
 \end{enumerate}
 
@@ -146,7 +146,7 @@ It is important to note that a loss function must be differentiable. The way neu
 \section{The Relationship Between CA and CNN}
 \label{ca-cnn}
 \subsection{CNN as a CA}
-As it turns out, CNN's are extremely similar \footnote{The idea for this section came from personal communication (Dr. Martin Schüle, May 2023)}. Cellular automata (CA) and convolutional neural networks (CNN) are both types of mathematical models that can be used to process and analyze data with a grid-like structure, such as images or time series data. \cite{PhysRevE}
+As it turns out, CNN's are extremely similar to conventional CA \footnote{The idea for this section came from personal communication (Dr. Martin Schüle, May 2023)}. CA and CNN's are both types of mathematical models that can be used to process and analyze data with a grid-like structure, such as images or time series data. \cite{PhysRevE}
 
 Both models operate by processing the input data in a local and hierarchical manner. In a CA, the state of each cell is updated based on the states of its neighboring cells. In the case of Wolfram's Elementary CA and GOL, this is done with a look-up table. CNN's use filters / kernels, which are applied to local patches of the input data to extract relevant features. However, one can think of a neighbourhood as a $NxM$ kernel or filter. In fact, by utilizing a cleverly constructed kernel and activation function, one can model many CA. A simple example of this would be game of life represented as a convolution. \\
 
@@ -188,11 +188,11 @@ It turns out that CNN's can learn the rules of arbitrary CA's \cite{PhysRevE}, f
 This section attempts to summarize the paper, \citetitle{growing_nca} by \citeauthor{growing_nca} \cite{growing_nca}
 \subsection{Brief Background}
 
-The motivation for this NCA, like the MLP and CNN, is biologically motivated. In this case, cell morphology was the topic of interest. How do cells, using local information like the cells around them and chemical gradients 'know' what type of organ or tissue to become? This incredible ability of living systems is known as self-organization. goal of \citeauthor{growing_nca} was to determine cell-level rules which simulate the behavior of these biological systems. Like creating complex shapes  starting from a single cell, maintaining that shape and regenerating damaged parts of the system.
+The motivation for this NCA, like the MLP and CNN, is biologically motivated. In this case, cell morphology was the topic of interest. How do cells, using local information like the cells around them and chemical gradients 'know' what type of organ or tissue to become? This incredible ability of living systems is known as self-organization. The goal of \citeauthor{growing_nca} was to determine cell-level rules which simulate the behavior of these biological systems, like creating complex shapes  starting from a single cell, maintaining that shape and regenerating itself once damaged. This is resistance to perturbation is a key difference between NCA and CA. Typical, deterministic CA are extremely sensitive to noise. A single cell state change may destroy the whole system and result in chaos, where NCA can learn to adapt.
 
 
 \subsection{The Model}
-Now that we have some basic foundational knowledge about CA and CNN's, we can move on to the real NCA (or differentiable, self-organizing systems). As discussed in section \ref{ca-cnn}, a CNN can be seen as a type of CA, but utilizing a continuous state-space instead of a discrete one. We can also increase the amount of channels each cell has to an arbitrary number. In the paper, they found 12 hidden states to be a good number. As can be seen in (fig \ref{fig:nca}), this model can be thought of as a “Recurrent, Residual Convolutional Network with ‘per-pixel’ Dropout”. The 'per-pixel dropout' refers to the stochastic updating of cells, where only a certain percentage of cells are updated to the next time step. We start from a single black pixel in the center of a blank image and run the model on it over a number of steps where the output of the model increments the input the input (i.e. recurrent).
+Now that we have some basic foundational knowledge about CA and CNN's, we can move on to the real NCA (or differentiable, self-organizing systems). As discussed in section \ref{ca-cnn}, a CNN can be seen as a type of CA, but utilizing a continuous state-space instead of a discrete one. We can also increase the amount of channels each cell has to an arbitrary number. In the paper, they found 12 hidden states to be a good number. As can be seen in (fig \ref{fig:nca}), this model can be thought of as a “Recurrent, Residual Convolutional Network with ‘per-pixel’ Dropout”. The 'per-pixel dropout' refers to the stochastic updating of cells, where only a certain percentage of cells are updated to the next time step. We start from a single black pixel in the center of a blank image and run the model on it over a number of steps where the output of the model increments the input (i.e. recurrent).
 \begin{figure}[h]
 	\includegraphics[width=1\textwidth]{../Figures/growing_nca.png}
 	\centering

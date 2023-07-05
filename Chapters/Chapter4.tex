@@ -9,7 +9,7 @@
 
 \section{Data}
 
-The data was provided by [Eawag, institute of Aquatic Sciences]. It was generated using CADDIE2D software, which is described in Chapter \ref{Chapter3}. In the dataset, we look at four catchment areas around Switzerland, '26', '292', '709', '819' (see Fig \ref{fig:4.1}). They are named according to a DEM naming scheme all DEM's have a spatial resolution of 1. For each DEM, there are fourteen rainfall events (see \ref{fig:4.2}). For each rainfall event, there is a water depth  map for each time step (see Fig \ref{fig:4.3}, which shows spatial evolution over time). The dataset provided also contains rainfall event names and  finally, a mask to remove areas outside the catchment area (if water were to propagate to this boundary, it would be considered run-off). Each time step represents 10 minutes of real time, but computational time of the CADDIES model varies for each time step computed.
+The data was provided by [Eawag, institute of Aquatic Sciences]. It was generated using CADDIE2D software, which is described in Chapter \ref{Chapter3}. In the dataset, we look at four catchment areas around Switzerland, '26', '292', '709', '819' (see Fig \ref{fig:4.1}). They are named according to a DEM naming scheme and have a spatial resolution of 1 m. For each DEM, there are fourteen rainfall events (see \ref{fig:4.2}). For each rainfall event, there is a water depth  map for each time step (see Fig \ref{fig:4.3}, which shows spatial evolution over time). The dataset provided also contains rainfall event names and  finally, a mask to remove areas outside the catchment area (if water were to propagate to this boundary, it would be considered run-off). Each time step represents 10 minutes of real time, but computational time of the CADDIES model varies for each time step computed.
 
 \begin{figure}[htbp]
 	\includegraphics[width=0.6\textwidth]{../Figures/Catchment_dems.png}
@@ -85,10 +85,10 @@ Where $r$ is rainfall in mm/hr. The interpolated rainfall is in m/ 10 minutes.
 	X_{w \_ normed} = \frac{X_{w}}{8}  
 \end{equation}
 
-Where $X_{w}$ is the water depth feature. The reason to divide by 8 is to drive the water depths to a range between 0 and 1 without making the values too small. As there was a lot of variation of water depths.
+Where $X_{w}$ is the water depth feature. The reason to divide by 8 is to drive the water depths to a range between 0 and 1 without making the values too small due to large variation in water depths.
 
 \subsubsection*{Additional Features}
-Two additional datasets were created for evaluation. The first Adds the DEM mask to the feature list. The motivation for this is to guarantee  runoff occurs outside the catchment areas. The second dataset adds rainfall directly to the water depth and we are left with only two features.
+Two additional datasets were created for evaluation. The first adds the DEM mask to the feature list. The motivation for this is to guarantee  runoff occurs outside the catchment areas. The second dataset adds rainfall directly to the water depth and we are left with only two features.
 
 \section{Models}
 
